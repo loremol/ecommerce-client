@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce API Interface</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border: 1px solid #ddd;
+        padding: 20px;
+    }
+    
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    
+    .section {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+    }
+    
+    .section h2 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }
+    
+    .auth-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .auth-form {
+        background: white;
+        padding: 15px;
+        border: 1px solid #ddd;
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+    }
+    
+    input[type="text"], 
+    input[type="email"], 
+    input[type="password"], 
+    input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    
+    button {
+        background: #555;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+        margin: 5px 0;
+    }
+    
+    button:hover {
+        background: #333;
+    }
+    
+    .btn-danger {
+        background: #c00;
+    }
+    
+    .btn-success {
+        background: #090;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        border: 1px solid #ddd;
+    }
+    
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+    
+    th {
+        background: #555;
+        color: white;
+    }
+    
+    .status {
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+    }
+    
+    .status.success {
+        background: #dfd;
+        border-color: #0a0;
+    }
+    
+    .status.error {
+        background: #fdd;
+        border-color: #a00;
+    }
+    
+    .hidden {
+        display: none;
+    }
+    
+    .controls {
+        margin-bottom: 15px;
+    }
+    
+    .cart-item {
+        padding: 8px;
+        background: #f5f5f5;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+    }
+    
+    #userInfo {
+        background: #555;
+        color: white;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 E-commerce API Interface</h1>
+        
+        <div id="userInfo" class="hidden">
+            <strong>Logged in as:</strong> <span id="currentUser"></span>
+            <button onclick="logout()" class="btn-danger" style="float: right;">Logout</button>
+        </div>
+        
+        <div id="statusMessage"></div>
+        
+        <!-- Authentication Section -->
+        <div class="section" id="authSection">
+            <h2>🔐 Authentication</h2>
+            <div class="auth-section">
+                <div class="auth-form">
+                    <h3>Register</h3>
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" id="regUsername" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="regEmail" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="regPassword" placeholder="Enter password">
+                    </div>
+					<div class="form-group">
+                        <label>Confirm Password:</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm password">
+                    </div>
+                    <button onclick="register()">Register</button>
+                </div>
+                
+                <div class="auth-form">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="loginEmail" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password">
+                    </div>
+                    <button onclick="login()">Login</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Section -->
+        <div class="section" id="productsSection" class="hidden">
+            <h2>📦 Products</h2>
+            <div class="controls">
+                <button onclick="fetchProducts()">Load Products</button>
+                <button onclick="showAddProductForm()">Add Product</button>
+            </div>
+            
+            <div id="addProductForm" class="hidden auth-form" style="margin-bottom: 20px;">
+                <h3>Add New Product</h3>
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="productName" placeholder="Product name">
+                </div>
+                <div class="form-group">
+                    <label>Price:</label>
+                    <input type="number" id="productPrice" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <input type="text" id="productDescription" placeholder="Product description">
+                </div>
+                <button onclick="addProduct()" class="btn-success">Add Product</button>
+                <button onclick="hideAddProductForm()" class="btn-danger">Cancel</button>
+            </div>
+            
+            <table id="productsTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <!-- Cart Section -->
+        <div class="section" id="cartSection" class="hidden">
+            <h2>🛒 Shopping Cart</h2>
+            <div class="controls">
+                <button onclick="fetchCart()">Load Cart</button>
+                <button onclick="clearCart()" class="btn-danger">Clear Cart</button>
+                <button onclick="checkout()" class="btn-success">Checkout</button>
+            </div>
+            <div id="cartItems"></div>
+        </div>
+        
+        <!-- Orders Section -->
+        <div class="section" id="ordersSection" class="hidden">
+            <h2>📋 Orders</h2>
+            <div class="controls">
+                <button onclick="fetchOrders()">Load Orders</button>
+            </div>
+            <table id="ordersTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="client.js"></script>
+</body>
+</html>
