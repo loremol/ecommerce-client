@@ -94,6 +94,7 @@ async function logout() {
             //             'Content-Type': 'application/json'},
             headers: {'Content-Type': 'application/json'},
             credentials: 'include',
+            body: JSON.stringify({csrfmiddlewaretoken})
         });
     } catch (error) {
         console.log('Logout request failed:', error);
