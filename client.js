@@ -73,8 +73,7 @@ async function login() {
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.setItem('authToken', data.token);
-            console.log(response.headers.getSetCookie());
+            // localStorage.setItem('authToken', data.token);
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
@@ -91,10 +90,10 @@ async function logout() {
     try {
         await fetch(`${API_ENDPOINT}/auth/logout/`, {
             method: 'POST',
-            headers: { 'Authorization': `Token ${localStorage.authToken}`,
-                        'Content-Type': 'application/json'},
+            // headers: { 'Authorization': `Token ${localStorage.authToken}`,
+            //             'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json'},
             credentials: 'include',
-            body: JSON.stringify({csrfmiddlewaretoken}),
         });
     } catch (error) {
         console.log('Logout request failed:', error);
