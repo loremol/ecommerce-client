@@ -16,6 +16,22 @@ function showStatus(message, type = 'success') {
     setTimeout(() => statusDiv.style.display = 'none', 5000);
 }
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 // Authentication
 async function register() {
     const username = document.getElementById('regUsername').value;
@@ -31,7 +47,7 @@ async function register() {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/register/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
             body: JSON.stringify({username, email, password, password_confirm}),
             credentials: 'include'
         });
@@ -64,7 +80,7 @@ async function login() {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/login/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
             body: JSON.stringify({email, password}),
             credentials: 'include'
         });
@@ -91,7 +107,7 @@ async function logout() {
             method: 'POST',
             // headers: { 'Authorization': `Token ${localStorage.authToken}`,
             //             'Content-Type': 'application/json'},
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
             credentials: 'include',
         });
     } catch (error) {
