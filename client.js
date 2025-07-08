@@ -63,17 +63,14 @@ async function login() {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/login/`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email, password}),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            const setCookies = response.headers.get('set-cookie');
-            console.log(setCookies);
-            console.log(response.headers.getSetCookie());
-            authToken = data.token;
+            localStorage.setItem('authToken', data.token);
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
@@ -84,7 +81,6 @@ async function login() {
         showStatus('Network error: ' + error.message, 'error');
     }
 
-    localStorage.setItem('authToken', authToken);
 }
 
 async function logout() {
