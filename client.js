@@ -91,7 +91,8 @@ async function logout() {
     try {
         await fetch(`${API_ENDPOINT}/auth/logout/`, {
             method: 'POST',
-            headers: { 'Authorization': `Token ${localStorage.authToken}`},
+            headers: { 'Authorization': `Token ${localStorage.authToken}`,
+                        'Content-Type': 'application/json'},
             credentials: 'include',
             body: JSON.stringify({csrfmiddlewaretoken}),
         });
