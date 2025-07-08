@@ -6,7 +6,7 @@ let cart = [];
 let orders = [];
 let users = [];
 let allUsers = []; // For search functionality
-let csrfmiddlewaretoken = "9FUloZ656RyECp0E4pAyMYyeaWuPnkcd";
+let csrfmiddlewaretoken = "rYjHRfOjDw35BR57eopIaLkvlhItNZi2";
 
 // Utility function to show status messages
 function showStatus(message, type = 'success') {
