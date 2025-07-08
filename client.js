@@ -6,6 +6,7 @@ let cart = [];
 let orders = [];
 let users = [];
 let allUsers = []; // For search functionality
+let csrfmiddlewaretoken = null;
 
 // Utility function to show status messages
 function showStatus(message, type = 'success') {
@@ -73,6 +74,7 @@ async function login() {
 
         if (response.ok) {
             localStorage.setItem('authToken', data.token);
+            console.log(response.headers.getSetCookie());
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
@@ -90,7 +92,8 @@ async function logout() {
         await fetch(`${API_ENDPOINT}/auth/logout/`, {
             method: 'POST',
             headers: { 'Authorization': `Token ${localStorage.authToken}`},
-            credentials: 'include'
+            credentials: 'include',
+            body: JSON.stringify({csrfmiddlewaretoken}),
         });
     } catch (error) {
         console.log('Logout request failed:', error);
