@@ -16,23 +16,6 @@ function showStatus(message, type = 'success') {
     setTimeout(() => statusDiv.style.display = 'none', 5000);
 }
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        console.log(cookies);
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 // Authentication
 async function register() {
     const username = document.getElementById('regUsername').value;
@@ -48,12 +31,9 @@ async function register() {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/register/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
-            body: JSON.stringify({username, email, password, password_confirm}),
-            credentials: 'include',
-            mode: 'cors'
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, password_confirm })
         });
-
 
         const data = await response.json();
 
@@ -83,16 +63,18 @@ async function login() {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/login/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
-            body: JSON.stringify({email, password}),
-            credentials: 'include',
-            mode: 'cors'
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+            credentials: 'include'
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            // localStorage.setItem('authToken', data.token);
+            const setCookies = response.headers.get('set-cookie');
+            console.log(setCookies);
+            console.log(response.headers.getSetCookie());
+            // authToken = data.token;
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
@@ -103,17 +85,15 @@ async function login() {
         showStatus('Network error: ' + error.message, 'error');
     }
 
+    // localStorage.setItem('authToken', authToken);
 }
 
 async function logout() {
     try {
         await fetch(`${API_ENDPOINT}/auth/logout/`, {
             method: 'POST',
-            // headers: { 'Authorization': `Token ${localStorage.authToken}`,
-            //             'Content-Type': 'application/json'},
-            headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
-            credentials: 'include',
-            mode: 'cors'
+            headers: { 'Authorization': `Token ${localStorage.authToken}`},
+            credentials: 'include'
         });
     } catch (error) {
         console.log('Logout request failed:', error);
@@ -147,7 +127,7 @@ async function fetchUsers() {
 
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/users/`, {
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: { 'Authorization': `Token ${authToken}` }
         });
 
         const data = await response.json();
@@ -212,7 +192,7 @@ async function toggleUserBan(username, currentlyBanned) {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${authToken}`
             },
-            body: JSON.stringify({username})
+            body: JSON.stringify({ username })
         });
 
         const data = await response.json();
@@ -231,7 +211,7 @@ async function toggleUserBan(username, currentlyBanned) {
 async function viewUserProfile(userId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/users/${userId}/`, {
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: { 'Authorization': `Token ${authToken}` }
         });
 
         const data = await response.json();
@@ -284,7 +264,7 @@ function clearUserSearch() {
 async function fetchProducts() {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/products/`, {
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         const data = await response.json();
@@ -304,7 +284,7 @@ async function fetchProducts() {
 async function fetchCategories() {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: { 'Authorization': `Token ${authToken}` }
         });
 
         const data = await response.json();
@@ -422,7 +402,7 @@ async function deleteProduct(productId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/products/${productId}/`, {
             method: 'DELETE',
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: { 'Authorization': `Token ${authToken}` }
         });
 
         if (response.ok) {
@@ -441,7 +421,7 @@ async function deleteProduct(productId) {
 async function fetchCart() {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/`, {
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         const data = await response.json();
@@ -466,7 +446,7 @@ async function addToCart(product) {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${localStorage.authToken}`
             },
-            body: JSON.stringify({product: product, quantity: 1})
+            body: JSON.stringify({ product: product, quantity: 1 })
         });
 
         if (response.ok) {
@@ -488,7 +468,7 @@ async function removeFromCart(itemId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/${itemId}`, {
             method: 'DELETE',
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         if (response.ok) {
@@ -509,7 +489,7 @@ async function clearCart() {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/clear/`, {
             method: 'DELETE',
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         if (response.ok) {
@@ -540,7 +520,7 @@ async function applyDiscount() {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${localStorage.authToken}`
             },
-            body: JSON.stringify({discount_code: discountCode})
+            body: JSON.stringify({ discount_code: discountCode })
         });
 
         const data = await response.json();
@@ -629,12 +609,11 @@ function displayCart() {
 
     cartDiv.appendChild(totalDiv);
 }
-
 // Order
 async function fetchOrders() {
     try {
         const response = await fetch(`${API_ENDPOINT}/orders/`, {
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         const data = await response.json();
@@ -676,7 +655,7 @@ function displayOrders() {
 async function viewOrderDetails(orderId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/orders/${orderId}/`, {
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         const data = await response.json();
@@ -697,7 +676,7 @@ async function cancelOrder(orderId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/orders/cancel/${orderId}/`, {
             method: 'DELETE',
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: { 'Authorization': `Token ${localStorage.authToken}` }
         });
 
         if (response.ok) {
@@ -764,6 +743,6 @@ async function checkout() {
 }
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     showLoggedOutState();
 });
