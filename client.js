@@ -54,6 +54,7 @@ async function register() {
             withCredentials: true
         });
 
+
         const data = await response.json();
 
         if (response.ok) {
