@@ -71,10 +71,7 @@ async function login() {
         const data = await response.json();
 
         if (response.ok) {
-            const setCookies = response.headers.get('set-cookie');
-            console.log(setCookies);
-            console.log(response.headers.getSetCookie());
-            // authToken = data.token;
+            authToken = data.token;
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
