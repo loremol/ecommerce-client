@@ -32,7 +32,8 @@ async function register() {
         const response = await fetch(`${API_ENDPOINT}/auth/register/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password, password_confirm })
+            body: JSON.stringify({ username, email, password, password_confirm }),
+            credentials: 'include'
         });
 
         const data = await response.json();
@@ -65,6 +66,7 @@ async function login() {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({email, password}),
+            credentials: 'include'
         });
 
         const data = await response.json();
@@ -88,6 +90,7 @@ async function logout() {
         await fetch(`${API_ENDPOINT}/auth/logout/`, {
             method: 'POST',
             headers: { 'Authorization': `Token ${localStorage.authToken}`},
+            credentials: 'include'
         });
     } catch (error) {
         console.log('Logout request failed:', error);
