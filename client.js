@@ -51,7 +51,6 @@ async function register() {
             headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
             body: JSON.stringify({username, email, password, password_confirm}),
             credentials: 'include',
-            withCredentials: true
         });
 
 
@@ -86,7 +85,6 @@ async function login() {
             headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
             body: JSON.stringify({email, password}),
             credentials: 'include',
-            withCredentials: true
         });
 
         const data = await response.json();
@@ -113,7 +111,6 @@ async function logout() {
             //             'Content-Type': 'application/json'},
             headers: {'Content-Type': 'application/json', 'X-CSRFToken': `${getCookie('csrftoken')}`},
             credentials: 'include',
-            withCredentials: true
         });
     } catch (error) {
         console.log('Logout request failed:', error);
