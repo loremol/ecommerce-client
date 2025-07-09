@@ -999,11 +999,10 @@ async function loadDiscounts() {
 }
 
 function toggleDiscountForm() {
-    const discountForm = document.getElementById('addDiscountForm');
-    if (discountForm.classList.contains("hidden")) {
-        discountForm.classList.remove("hidden");
+    if (document.getElementById('addDiscountForm').classList.contains("hidden")) {
+        document.getElementById('addDiscountForm').classList.remove("hidden");
     } else {
-        discountForm.classList.add("hidden");
+        document.getElementById('addDiscountForm').classList.add("hidden");
     }
 }
 
