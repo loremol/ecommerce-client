@@ -77,8 +77,6 @@ async function login() {
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
-            await loadCategories();
-            await loadDiscounts();
         } else {
             showStatus(data.message || 'Login failed', 'error');
         }
@@ -913,7 +911,10 @@ function displayCart() {
 // Add this function to fetch categories and populate the dropdown
 async function loadCategories() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/`);
+        const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
+            method: 'DELETE',
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
+        });
         const data = await response.json();
         const categorySelect = document.getElementById('category');
         categories = data;
@@ -938,7 +939,7 @@ async function createDiscount() {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/create_discount`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`},
             body: JSON.stringify({code, percentage, expiry_date: expiryDate, category})
         });
 
@@ -959,6 +960,7 @@ async function createDiscount() {
 async function deleteDiscount(discountId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/delete_discount/${discountId}`, {
+            headers: {'Authorization': `Token ${localStorage.authToken}`},
             method: 'DELETE'
         });
 
@@ -977,7 +979,9 @@ async function deleteDiscount(discountId) {
 // Add this function to load and display all discounts
 async function loadDiscounts() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/discounts/`);
+        const response = await fetch(`${API_ENDPOINT}/cart/discounts/`, {
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
+        });
         const data = await response.json();
         const discountList = document.getElementById('discountList');
         discountList.innerHTML = ''; // Clear the list
