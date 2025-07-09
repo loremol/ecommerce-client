@@ -908,16 +908,10 @@ function displayCart() {
 }
 
 // Discounts
-// Add this function to fetch categories and populate the dropdown
-async function loadCategories() {
+async function populateDiscountCategoryDropdown() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
-            method: 'GET',
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
-        });
-        const data = await response.json();
-        const categorySelect = document.getElementById('category');
-        categories = data;
+        await fetchCategories()
+        const categorySelect = document.getElementById('discount_category');
         categories.forEach(category => {
             const option = document.createElement('option');
             option.value = category.id;
@@ -1008,6 +1002,7 @@ async function loadDiscounts() {
 function toggleDiscountForm() {
     const discountForm = document.getElementById('discountForm');
     if (discountForm.style.display === 'none' || discountForm.style.display === '') {
+        populateDiscountCategoryDropdown();
         discountForm.style.display = 'block';
     } else {
         discountForm.style.display = 'none';

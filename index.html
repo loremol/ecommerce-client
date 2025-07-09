@@ -538,10 +538,10 @@
     <div class="section" id="discountsManagementSection" class="hidden">
         <h2>Manage Discounts</h2>
         <div class="auth-section">
-            <button onclick="loadDiscounts();loadCategories();">Load Discounts</button>
+            <button onclick="loadDiscounts()">Load Discounts</button>
             <button onclick="toggleDiscountForm()">Add Discount</button>
         </div>
-        <form id="discountForm" style="display: none;" onsubmit="createDiscount();">
+        <form id="discountForm" style="display: none;" onsubmit="createDiscount()">
             <div class="form-group">
                 <label for="discount_code">Discount Code:</label>
                 <input type="text" id="discount_code" name="code" required>
