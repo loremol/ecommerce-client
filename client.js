@@ -960,7 +960,7 @@ async function createDiscount() {
 async function deleteDiscount(discountId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/delete_discount/${discountId}`, {
-            headers: {'Authorization': `Token ${localStorage.authToken}`},
+            headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`},
             method: 'DELETE'
         });
 
@@ -980,7 +980,7 @@ async function deleteDiscount(discountId) {
 async function loadDiscounts() {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/discounts/`, {
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
+            headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`}
         });
         const data = await response.json();
         const discountList = document.getElementById('discountList');
