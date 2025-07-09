@@ -937,7 +937,7 @@ async function createDiscount() {
     const category = document.getElementById('category').value;
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/create_discount`, {
+        const response = await fetch(`${API_ENDPOINT}/cart/create_discount/`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`},
             body: JSON.stringify({code, percentage, expiry_date: expiryDate, category})
@@ -959,7 +959,7 @@ async function createDiscount() {
 // Add this function to delete a discount
 async function deleteDiscount(discountId) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/delete_discount/${discountId}`, {
+        const response = await fetch(`${API_ENDPOINT}/cart/delete_discount/${discountId}/`, {
             headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`},
             method: 'DELETE'
         });
