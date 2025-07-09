@@ -939,7 +939,10 @@ async function createDiscount() {
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/create_discount/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`},
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${localStorage.authToken}`
+            },
             body: JSON.stringify({code, percentage, expiry_date: expiryDate, category})
         });
 
