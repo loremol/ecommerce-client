@@ -1081,27 +1081,25 @@ function displayAllOrders() {
     document.getElementById('allOrdersTable').classList.remove('hidden');
 }
 
-function fetchOrderStatistics() {
+async function fetchOrderStatistics() {
     try {
         const response = await fetch(`${API_ENDPOINT}/orders/stats/`, {
             method: 'GET',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch order statistics');
-        }
-
         const data = await response.json();
 
-        document.getElementById('totalOrders').textContent = `Total: ${data.total_orders}`;
-        document.getElementById('pendingOrders').textContent = `Pending: ${data.pending_orders}`;
-        document.getElementById('shippedOrders').textContent = `Shipped: ${data.shipped_orders}`;
-        document.getElementById('deliveredOrders').textContent = `Delivered: ${data.delivered_orders}`;
-        document.getElementById('cancelledOrders').textContent = `Cancelled: ${data.cancelled_orders}`;
-        document.getElementById('totalRevenue').textContent = data.total_revenue.toFixed(2);
+        if (response.ok) {
+            document.getElementById('totalOrders').textContent = `Total: ${data.total_orders}`;
+            document.getElementById('pendingOrders').textContent = `Pending: ${data.pending_orders}`;
+            document.getElementById('shippedOrders').textContent = `Shipped: ${data.shipped_orders}`;
+            document.getElementById('deliveredOrders').textContent = `Delivered: ${data.delivered_orders}`;
+            document.getElementById('cancelledOrders').textContent = `Cancelled: ${data.cancelled_orders}`;
+            document.getElementById('totalRevenue').textContent = data.total_revenue.toFixed(2);
 
-        document.getElementById('ordersStats').style.display = 'block';
+            document.getElementById('ordersStats').style.display = 'block';
+        }
     } catch (error) {
         showStatus('Error fetching order statistics: ' + error.message, 'error');
     }
