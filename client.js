@@ -77,6 +77,8 @@ async function login() {
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
+            await loadCategories();
+            await loadDiscounts();
         } else {
             showStatus(data.message || 'Login failed', 'error');
         }
@@ -905,6 +907,99 @@ function displayCart() {
 
     cartDiv.appendChild(totalDiv);
 }
+
+// Discounts
+// Add this function to fetch categories and populate the dropdown
+async function loadCategories() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/categories/`);
+        const data = await response.json();
+        const categorySelect = document.getElementById('category');
+        categories = data;
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+    } catch (error) {
+        showStatus('Failed to load categories: ' + error.message, 'error');
+    }
+}
+
+// Add this function to create a discount
+async function createDiscount() {
+    const code = document.getElementById('code').value;
+    const percentage = parseFloat(document.getElementById('percentage').value);
+    const expiryDate = document.getElementById('expiryDate').value;
+    const category = document.getElementById('category').value;
+
+    if (!code || isNaN(percentage) || !expiryDate || !category) {
+        showStatus('Please fill in all fields correctly', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/create_discount`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({code, percentage, expiry_date: expiryDate, category})
+        });
+
+        if (response.ok) {
+            showStatus('Discount created successfully!');
+            document.getElementById('discountForm').reset();
+            await loadDiscounts(); // Refresh the list of discounts
+        } else {
+            const data = await response.json();
+            showStatus(data.message || 'Failed to create discount', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+// Add this function to delete a discount
+async function deleteDiscount(discountId) {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/delete_discount/${discountId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            showStatus('Discount deleted successfully!');
+            await loadDiscounts(); // Refresh the list of discounts
+        } else {
+            const data = await response.json();
+            showStatus(data.message || 'Failed to delete discount', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+// Add this function to load and display all discounts
+async function loadDiscounts() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/discounts/`);
+        const data = await response.json();
+        const discountList = document.getElementById('discountList');
+        discountList.innerHTML = ''; // Clear the list
+
+        data.forEach(discount => {
+            const li = document.createElement('li');
+            li.textContent = `${discount.code} - ${discount.percentage}% off until ${discount.expiry_date}`;
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => deleteDiscount(discount.id);
+            li.appendChild(deleteButton);
+            discountList.appendChild(li);
+        });
+    } catch (error) {
+        showStatus('Failed to load discounts: ' + error.message, 'error');
+    }
+}
+
 
 // Order
 async function fetchOrders() {
