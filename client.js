@@ -101,6 +101,43 @@ async function logout() {
     showStatus('Logged out successfully');
 }
 
+async function updateProfile() {
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const dateOfBirth = document.getElementById('dateOfBirth').value;
+
+    if (!username || !email) {
+        showStatus('Please fill in all fields', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/auth/update/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${localStorage.authToken}`
+            },
+            body: JSON.stringify({username, email, password, phone, address, dateOfBirth})
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showStatus('Profile updated successfully!');
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+        } else {
+            showStatus(data.message || 'Failed to update profile', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
 function showLoggedInState() {
     document.getElementById('authSection').classList.add('hidden');
     document.getElementById('userInfo').classList.remove('hidden');
@@ -1050,7 +1087,7 @@ async function fetchAllOrders() {
         if (response.ok) {
             allOrders = data;
             displayAllOrders();
-            fetchOrderStatistics();
+            await fetchOrderStatistics();
             showStatus('All orders loaded successfully');
         } else {
             showStatus(data.error || 'Failed to fetch all orders', 'error');
