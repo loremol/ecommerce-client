@@ -103,23 +103,23 @@ async function logout() {
 
 function showLoggedInState() {
     document.getElementById('authSection').classList.add('hidden');
+    document.getElementById('userInfo').classList.remove('hidden');
     document.getElementById('categoriesSection').classList.remove('hidden');
     document.getElementById('productsSection').classList.remove('hidden');
     document.getElementById('cartSection').classList.remove('hidden');
     document.getElementById('ordersSection').classList.remove('hidden');
     document.getElementById('userManagementSection').classList.remove('hidden');
-    document.getElementById('userInfo').classList.remove('hidden');
     document.getElementById('currentUser').textContent = currentUser.username || currentUser.email;
 }
 
 function showLoggedOutState() {
     document.getElementById('authSection').classList.remove('hidden');
+    document.getElementById('userInfo').classList.add('hidden');
     document.getElementById('categoriesSection').classList.add('hidden');
     document.getElementById('productsSection').classList.add('hidden');
     document.getElementById('cartSection').classList.add('hidden');
     document.getElementById('ordersSection').classList.add('hidden');
     document.getElementById('userManagementSection').classList.add('hidden');
-    document.getElementById('userInfo').classList.add('hidden');
 }
 
 // User Management (Moderators Only)
