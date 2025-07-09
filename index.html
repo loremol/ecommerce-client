@@ -541,7 +541,7 @@
             <button onclick="loadDiscounts()">Load Discounts</button>
             <button onclick="toggleDiscountForm();populateDiscountCategoryDropdown()">Add Discount</button>
         </div>
-        <form id="addDiscountForm" class="hidden">
+        <div id="addDiscountForm" class="hidden">
             <div class="form-group">
                 <label for="discount_code">Discount Code:</label>
                 <input type="text" id="discount_code" name="code" required>
@@ -561,7 +561,7 @@
                 </select>
             </div>
             <button onclick="createDiscount()">Create Discount</button>
-        </form>
+        </div>
         <ul id="discountList"></ul>
     </div>
 
