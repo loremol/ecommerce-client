@@ -535,9 +535,13 @@
         </table>
     </div>
 
-    <div class="section">
+    <div class="section" id="discountsManagementSection" class="hidden">
         <h2>Manage Discounts</h2>
-        <form id="discountForm" onsubmit="event.preventDefault(); createDiscount();">
+        <div class="auth-section">
+            <button onclick="loadDiscounts()">Load Discounts</button>
+            <button onclick="toggleDiscountForm()">Add Discount</button>
+        </div>
+        <form id="discountForm" style="display: none;" onsubmit="createDiscount();">
             <div class="form-group">
                 <label for="code">Discount Code:</label>
                 <input type="text" id="code" name="code" required>

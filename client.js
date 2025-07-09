@@ -116,8 +116,7 @@ async function populateProfile() {
             document.getElementById('updPhone').value = data.phone || '';
             document.getElementById('updAddress').value = data.address || '';
             document.getElementById('updDateOfBirth').value = data.date_of_birth || '';
-        }
-        else {
+        } else {
             showStatus(`Failed to fetch profile: ${data}`)
         }
     } catch (error) {
@@ -165,6 +164,7 @@ function showLoggedInState() {
     document.getElementById('ordersSection').classList.remove('hidden');
     document.getElementById('userManagementSection').classList.remove('hidden');
     document.getElementById('allOrdersSection').classList.remove('hidden');
+    document.getElementById('discountsManagementSection').classList.remove('hidden');
     document.getElementById('currentUser').textContent = currentUser.username || currentUser.email;
 }
 
@@ -178,6 +178,7 @@ function showLoggedOutState() {
     document.getElementById('ordersSection').classList.add('hidden');
     document.getElementById('userManagementSection').classList.add('hidden');
     document.getElementById('allOrdersSection').classList.add('hidden');
+    document.getElementById('discountsManagementSection').classList.add('hidden');
 }
 
 // User Management (Moderators Only)
@@ -912,7 +913,7 @@ function displayCart() {
 // Add this function to fetch categories and populate the dropdown
 async function loadCategories() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/categories/`);
+        const response = await fetch(`${API_ENDPOINT}/store/categories/`);
         const data = await response.json();
         const categorySelect = document.getElementById('category');
         categories = data;
@@ -934,13 +935,8 @@ async function createDiscount() {
     const expiryDate = document.getElementById('expiryDate').value;
     const category = document.getElementById('category').value;
 
-    if (!code || isNaN(percentage) || !expiryDate || !category) {
-        showStatus('Please fill in all fields correctly', 'error');
-        return;
-    }
-
     try {
-        const response = await fetch(`${API_ENDPOINT}/create_discount`, {
+        const response = await fetch(`${API_ENDPOINT}/cart/create_discount`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({code, percentage, expiry_date: expiryDate, category})
@@ -962,7 +958,7 @@ async function createDiscount() {
 // Add this function to delete a discount
 async function deleteDiscount(discountId) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/delete_discount/${discountId}`, {
+        const response = await fetch(`${API_ENDPOINT}/cart/delete_discount/${discountId}`, {
             method: 'DELETE'
         });
 
@@ -981,7 +977,7 @@ async function deleteDiscount(discountId) {
 // Add this function to load and display all discounts
 async function loadDiscounts() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/discounts/`);
+        const response = await fetch(`${API_ENDPOINT}/cart/discounts/`);
         const data = await response.json();
         const discountList = document.getElementById('discountList');
         discountList.innerHTML = ''; // Clear the list
@@ -999,6 +995,16 @@ async function loadDiscounts() {
         showStatus('Failed to load discounts: ' + error.message, 'error');
     }
 }
+
+function toggleDiscountForm() {
+    const discountForm = document.getElementById('discountForm');
+    if (discountForm.style.display === 'none' || discountForm.style.display === '') {
+        discountForm.style.display = 'block';
+    } else {
+        discountForm.style.display = 'none';
+    }
+}
+
 
 
 // Order
@@ -1253,7 +1259,6 @@ async function fetchOrderStatistics() {
         showStatus('Error fetching order statistics: ' + error.message, 'error');
     }
 }
-
 
 async function deleteOrder(orderId) {
     if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
