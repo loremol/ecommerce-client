@@ -6,7 +6,10 @@ let products = [];
 let cart = [];
 let orders = [];
 let users = [];
-let allUsers = []; // For search functionality
+let allUsers = [];
+let allOrders = [];
+let filteredOrders = [];
+
 
 // Utility function to show status messages
 function showStatus(message, type = 'success') {
@@ -109,6 +112,7 @@ function showLoggedInState() {
     document.getElementById('cartSection').classList.remove('hidden');
     document.getElementById('ordersSection').classList.remove('hidden');
     document.getElementById('userManagementSection').classList.remove('hidden');
+    document.getElementById('allOrdersSection').classList.remove('hidden');
     document.getElementById('currentUser').textContent = currentUser.username || currentUser.email;
 }
 
@@ -120,6 +124,7 @@ function showLoggedOutState() {
     document.getElementById('cartSection').classList.add('hidden');
     document.getElementById('ordersSection').classList.add('hidden');
     document.getElementById('userManagementSection').classList.add('hidden');
+    document.getElementById('allOrdersSection').classList.add('hidden');
 }
 
 // User Management (Moderators Only)
@@ -1062,7 +1067,13 @@ async function updateOrderStatus(orderId, newStatus) {
 
         if (response.ok) {
             showStatus(`Order #${orderId} updated successfully`);
-            fetchOrders(); // Refresh the orders list
+
+            // Refresh appropriate view
+            if (document.getElementById('allOrdersSection').classList.contains('hidden') === false) {
+                await fetchAllOrders(); // Refresh all orders if in admin view
+            } else {
+                fetchOrders(); // Refresh user's orders
+            }
 
             // If the order was cancelled, also refresh products to show updated stock
             if (newStatus === 'C') {
@@ -1099,6 +1110,178 @@ async function deleteOrder(orderId) {
         showStatus('Network error: ' + error.message, 'error');
     }
 }
+
+// Fetch all orders (admin only)
+async function fetchAllOrders() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/orders/all/`, {
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            allOrders = data;
+            filteredOrders = [...allOrders];
+            displayAllOrders();
+            calculateOrderStats();
+            showStatus('All orders loaded successfully');
+        } else {
+            showStatus(data.error || 'Failed to fetch all orders', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+// Display all orders with user information
+function displayAllOrders() {
+    const tbody = document.querySelector('#allOrdersTable tbody');
+    tbody.innerHTML = '';
+
+    const statusBadgeColors = {
+        'P': '#f39c12',  // Orange for Pending
+        'S': '#3498db',  // Blue for Shipped
+        'D': '#27ae60',  // Green for Delivered
+        'C': '#e74c3c'   // Red for Cancelled
+    };
+
+    const statusNames = {
+        'P': 'Pending',
+        'S': 'Shipped',
+        'D': 'Delivered',
+        'C': 'Cancelled'
+    };
+
+    filteredOrders.forEach(order => {
+        const row = document.createElement('tr');
+
+        // Extract username from user data
+        const username = typeof order.user === 'object' ? order.user.username : `User #${order.user}`;
+        const userEmail = typeof order.user === 'object' ? order.user.email : 'N/A';
+
+        row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${username}</td>
+            <td>${userEmail}</td>
+            <td>${new Date(order.date).toLocaleDateString()}</td>
+            <td>€${order.total}</td>
+            <td>
+                <span style="background: ${statusBadgeColors[order.status]}; 
+                           color: white; 
+                           padding: 3px 8px; 
+                           border-radius: 3px; 
+                           font-size: 0.9em;">
+                    ${statusNames[order.status] || order.status}
+                </span>
+                <select onchange="updateOrderStatus(${order.id}, this.value)" 
+                        style="padding: 5px; margin-left: 10px;">
+                    <option value="">Change Status</option>
+                    <option value="P" ${order.status === 'P' ? 'disabled' : ''}>Pending</option>
+                    <option value="S" ${order.status === 'S' ? 'disabled' : ''}>Shipped</option>
+                    <option value="D" ${order.status === 'D' ? 'disabled' : ''}>Delivered</option>
+                    <option value="C" ${order.status === 'C' ? 'disabled' : ''}>Cancelled</option>
+                </select>
+            </td>
+            <td>
+                <button onclick="viewOrderDetails(${order.id})">View Details</button>
+                ${order.status === 'P' ?
+            `<button onclick="deleteOrderAdmin(${order.id})" class="btn-danger">Delete</button>` :
+            ''}
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    document.getElementById('allOrdersTable').classList.remove('hidden');
+}
+
+// Calculate and display order statistics
+function calculateOrderStats() {
+    const stats = {
+        total: allOrders.length,
+        pending: allOrders.filter(o => o.status === 'P').length,
+        shipped: allOrders.filter(o => o.status === 'S').length,
+        delivered: allOrders.filter(o => o.status === 'D').length,
+        cancelled: allOrders.filter(o => o.status === 'C').length,
+        revenue: allOrders
+            .filter(o => o.status !== 'C') // Exclude cancelled orders from revenue
+            .reduce((sum, o) => sum + parseFloat(o.total), 0)
+    };
+
+    document.getElementById('totalOrders').textContent = `Total: ${stats.total}`;
+    document.getElementById('pendingOrders').textContent = `Pending: ${stats.pending}`;
+    document.getElementById('shippedOrders').textContent = `Shipped: ${stats.shipped}`;
+    document.getElementById('deliveredOrders').textContent = `Delivered: ${stats.delivered}`;
+    document.getElementById('cancelledOrders').textContent = `Cancelled: ${stats.cancelled}`;
+    document.getElementById('totalRevenue').textContent = stats.revenue.toFixed(2);
+
+    document.getElementById('ordersStats').style.display = 'block';
+}
+
+// Filter orders based on search and status
+function filterOrders() {
+    const searchTerm = document.getElementById('orderSearchBox').value.toLowerCase();
+    const statusFilter = document.getElementById('orderStatusFilter').value;
+
+    filteredOrders = allOrders.filter(order => {
+        // Status filter
+        if (statusFilter && order.status !== statusFilter) {
+            return false;
+        }
+
+        // Search filter
+        if (searchTerm) {
+            const orderId = order.id.toString().toLowerCase();
+            const username = typeof order.user === 'object' ?
+                order.user.username.toLowerCase() : '';
+            const userEmail = typeof order.user === 'object' ?
+                order.user.email.toLowerCase() : '';
+
+            return orderId.includes(searchTerm) ||
+                username.includes(searchTerm) ||
+                userEmail.includes(searchTerm);
+        }
+
+        return true;
+    });
+
+    displayAllOrders();
+}
+
+// Clear order search
+function clearOrderSearch() {
+    document.getElementById('orderSearchBox').value = '';
+    document.getElementById('orderStatusFilter').value = '';
+    filteredOrders = [...allOrders];
+    displayAllOrders();
+}
+
+// Delete order (admin version that refreshes all orders)
+async function deleteOrderAdmin(orderId) {
+    if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/orders/cancel/${orderId}/`, {
+            method: 'DELETE',
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
+        });
+
+        if (response.ok) {
+            await fetchAllOrders(); // Refresh all orders
+            fetchProducts(); // Refresh products to show restored stock
+            showStatus('Order deleted successfully');
+        } else {
+            const data = await response.json();
+            showStatus(data.error || 'Failed to delete order', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
 
 
 // Initialize the application
