@@ -931,10 +931,10 @@ async function loadCategories() {
 
 // Add this function to create a discount
 async function createDiscount() {
-    const code = document.getElementById('code').value;
-    const percentage = parseFloat(document.getElementById('percentage').value);
-    const expiryDate = document.getElementById('expiryDate').value;
-    const category = document.getElementById('category').value;
+    const code = document.getElementById('discount_code').value;
+    const percentage = parseFloat(document.getElementById('discount_percentage').value);
+    const expiryDate = document.getElementById('discount_expiryDate').value;
+    const category = document.getElementById('discount_category').value;
 
     try {
         const response = await fetch(`${API_ENDPOINT}/cart/create_discount/`, {
