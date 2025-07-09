@@ -625,13 +625,6 @@ async function updateProduct() {
         return;
     }
 
-    // Find the category object
-    const category = categories.find(c => c.id === parseInt(categoryId));
-    if (!category) {
-        showStatus('Invalid category selected', 'error');
-        return;
-    }
-
     try {
         const response = await fetch(`${API_ENDPOINT}/store/products/update/${productId}/`, {
             method: 'PUT',
@@ -643,7 +636,7 @@ async function updateProduct() {
                 name,
                 price: parseFloat(price),
                 description,
-                category: category, // Send the full category object as expected by ProductSerializer
+                category: parseInt(categoryId), // Send just the category ID
                 stock_quantity: parseInt(stock_quantity),
                 weight,
                 dimensions
@@ -663,7 +656,6 @@ async function updateProduct() {
         showStatus('Network error: ' + error.message, 'error');
     }
 }
-
 async function deleteProduct(productId) {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
