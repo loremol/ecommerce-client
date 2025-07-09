@@ -95,7 +95,6 @@ async function logout() {
         console.log('Logout request failed:', error);
     }
 
-    authToken = null;
     currentUser = null;
     showLoggedOutState();
     showStatus('Logged out successfully');
@@ -104,7 +103,7 @@ async function logout() {
 async function updateProfile() {
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const password = document.getElementById('updatePassword').value;
     const phone = document.getElementById('phone').value;
     const address = document.getElementById('address').value;
     const dateOfBirth = document.getElementById('dateOfBirth').value;
@@ -123,8 +122,6 @@ async function updateProfile() {
 
         if (response.ok) {
             showStatus('Profile updated successfully!');
-            document.getElementById('username').value = '';
-            document.getElementById('email').value = '';
         } else {
             showStatus(data.message || 'Failed to update profile', 'error');
         }
