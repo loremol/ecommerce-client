@@ -999,7 +999,7 @@ async function loadDiscounts() {
 }
 
 function toggleDiscountForm() {
-    const discountForm = document.getElementById('discountForm');
+    const discountForm = document.getElementById('addDiscountForm');
     if (discountForm.style.display === 'none' || discountForm.style.display === '') {
         discountForm.classList.remove("hidden");
     } else {
