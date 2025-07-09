@@ -125,7 +125,6 @@ async function populateProfile() {
 async function updateProfile() {
     const username = document.getElementById('updUsername').value;
     const email = document.getElementById('updEmail').value;
-    const password = document.getElementById('updPassword').value;
     const phone = document.getElementById('updPhone').value;
     const address = document.getElementById('updAddress').value;
     const date_of_birth = document.getElementById('updDateOfBirth').value;
@@ -137,7 +136,7 @@ async function updateProfile() {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${localStorage.authToken}`
             },
-            body: JSON.stringify({username, email, password, phone, address, date_of_birth})
+            body: JSON.stringify({username, email, phone, address, date_of_birth})
         });
 
         const data = await response.json();
