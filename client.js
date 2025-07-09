@@ -1000,7 +1000,7 @@ async function loadDiscounts() {
 
 function toggleDiscountForm() {
     const discountForm = document.getElementById('addDiscountForm');
-    if (discountForm.style.display === 'none' || discountForm.style.display === '') {
+    if (discountForm.classList.contains("hidden")) {
         discountForm.classList.remove("hidden");
     } else {
         discountForm.classList.add("hidden");
