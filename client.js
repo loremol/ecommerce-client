@@ -1,6 +1,7 @@
 const API_ENDPOINT = 'https://ecommerce-django-production-f55b.up.railway.app';
 
 let currentUser = null;
+let categories = [];
 let products = [];
 let cart = [];
 let orders = [];
@@ -254,6 +255,138 @@ function clearUserSearch() {
     displayUsers();
 }
 
+// Category
+// Fetch categories from the API
+async function fetchCategories() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
+            headers: {'Authorization': `Token ${authToken}`}
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            categories = data;
+            displayCategories();
+            populateCategorySelect(); // Update the product form dropdown
+            showStatus('Categories loaded successfully');
+        } else {
+            showStatus(data.message || 'Failed to fetch categories', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+// Display categories in the table
+function displayCategories() {
+    const tbody = document.querySelector('#categoriesTable tbody');
+    tbody.innerHTML = '';
+
+    categories.forEach(category => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${category.id}</td>
+            <td>${category.name}</td>
+            <td>${category.description || 'No description'}</td>
+            <td>
+                <button onclick="deleteCategory(${category.id})" class="btn-danger">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    document.getElementById('categoriesTable').classList.remove('hidden');
+}
+
+// Create a new category
+async function createCategory() {
+    const name = document.getElementById('categoryName').value.trim();
+    const description = document.getElementById('categoryDescription').value.trim();
+
+    if (!name) {
+        showStatus('Please enter a category name', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/store/categories/create/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${authToken}`
+            },
+            body: JSON.stringify({
+                name,
+                description
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            hideAddCategoryForm();
+            fetchCategories(); // Refresh the categories list
+            showStatus('Category created successfully');
+        } else {
+            showStatus(data.message || 'Failed to create category', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+// Delete a category
+async function deleteCategory(categoryId) {
+    if (!confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/store/categories/${categoryId}/`, {
+            method: 'DELETE',
+            headers: {'Authorization': `Token ${authToken}`}
+        });
+
+        if (response.ok) {
+            fetchCategories(); // Refresh the categories list
+            showStatus('Category deleted successfully');
+        } else {
+            const data = await response.json();
+            showStatus(data.message || 'Failed to delete category', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+// Show the add category form
+function showAddCategoryForm() {
+    document.getElementById('addCategoryForm').classList.remove('hidden');
+}
+
+// Hide the add category form and clear inputs
+function hideAddCategoryForm() {
+    document.getElementById('addCategoryForm').classList.add('hidden');
+    document.getElementById('categoryName').value = '';
+    document.getElementById('categoryDescription').value = '';
+}
+
+function populateCategorySelect() {
+    const categorySelect = document.getElementById('productCategory');
+    if (!categorySelect) return; // Exit if element doesn't exist
+
+    categorySelect.innerHTML = '<option value="">Select a category</option>';
+
+    if (categories && categories.length > 0) {
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+    }
+}
 
 // Product
 async function fetchProducts() {
@@ -274,37 +407,6 @@ async function fetchProducts() {
     } catch (error) {
         showStatus('Network error: ' + error.message, 'error');
     }
-}
-
-async function fetchCategories() {
-    try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
-            headers: {'Authorization': `Token ${authToken}`}
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            categories = data;
-            populateCategorySelect();
-        } else {
-            showStatus(data.message || 'Failed to fetch categories', 'error');
-        }
-    } catch (error) {
-        showStatus('Network error: ' + error.message, 'error');
-    }
-}
-
-function populateCategorySelect() {
-    const categorySelect = document.getElementById('productCategory');
-    categorySelect.innerHTML = '<option value="">Select a category</option>';
-
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.name;
-        categorySelect.appendChild(option);
-    });
 }
 
 function displayProducts() {

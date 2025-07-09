@@ -228,6 +228,41 @@
         </div>
     </div>
 
+    <!-- Categories Section -->
+    <div class="section" id="categoriesSection" class="hidden">
+        <h2>Categories</h2>
+        <div class="controls">
+            <button onclick="fetchCategories()">Load Categories</button>
+            <button onclick="showAddCategoryForm()">Add Category</button>
+        </div>
+
+        <div id="addCategoryForm" class="hidden auth-form" style="margin-bottom: 20px;">
+            <h3>Add New Category</h3>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="categoryName" placeholder="Category name">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" id="categoryDescription" placeholder="Category description">
+            </div>
+            <button onclick="createCategory()" class="btn-success">Add Category</button>
+            <button onclick="hideAddCategoryForm()" class="btn-danger">Cancel</button>
+        </div>
+
+        <table id="categoriesTable" class="hidden">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
     <!-- Products Section -->
     <div class="section" id="productsSection" class="hidden">
         <h2>Products</h2>
