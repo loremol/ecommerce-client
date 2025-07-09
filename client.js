@@ -141,6 +141,7 @@ async function updateProfile() {
 function showLoggedInState() {
     document.getElementById('authSection').classList.add('hidden');
     document.getElementById('userInfo').classList.remove('hidden');
+    document.getElementById('profileSection').classList.remove('hidden');
     document.getElementById('categoriesSection').classList.remove('hidden');
     document.getElementById('productsSection').classList.remove('hidden');
     document.getElementById('cartSection').classList.remove('hidden');
@@ -153,6 +154,7 @@ function showLoggedInState() {
 function showLoggedOutState() {
     document.getElementById('authSection').classList.remove('hidden');
     document.getElementById('userInfo').classList.add('hidden');
+    document.getElementById('profileSection').classList.add('hidden');
     document.getElementById('categoriesSection').classList.add('hidden');
     document.getElementById('productsSection').classList.add('hidden');
     document.getElementById('cartSection').classList.add('hidden');
