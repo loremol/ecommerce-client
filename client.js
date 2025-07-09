@@ -183,7 +183,7 @@ async function fetchUsers() {
 
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/users/`, {
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
         const data = await response.json();
@@ -245,7 +245,7 @@ async function toggleUserBan(username, currentlyBanned) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${authToken}`
+                'Authorization': `Token ${localStorage.authToken}`
             },
             body: JSON.stringify({username})
         });
@@ -266,7 +266,7 @@ async function toggleUserBan(username, currentlyBanned) {
 async function viewUserProfile(userId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/users/${userId}/`, {
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
         const data = await response.json();
