@@ -1001,7 +1001,6 @@ async function loadDiscounts() {
 function toggleDiscountForm() {
     const discountForm = document.getElementById('discountForm');
     if (discountForm.style.display === 'none' || discountForm.style.display === '') {
-        populateDiscountCategoryDropdown();
         discountForm.classList.remove("hidden");
     } else {
         discountForm.classList.add("hidden");
