@@ -1137,9 +1137,7 @@ function displayAllOrders() {
             </td>
             <td>
                 <button onclick="viewOrderDetails(${order.id})">View Details</button>
-                ${order.status === 'P' ?
-            `<button onclick="deleteOrderAdmin(${order.id})" class="btn-danger">Delete</button>` :
-            ''}
+                <button onclick="deleteOrderAdmin(${order.id})" class="btn-danger">Delete</button>
             </td>
         `;
         tbody.appendChild(row);
