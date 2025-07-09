@@ -1288,7 +1288,7 @@ async function fetchOrderStatistics() {
             document.getElementById('cancelledOrders').textContent = `Cancelled: ${data.cancelled_orders}`;
             document.getElementById('totalRevenue').textContent = data.total_revenue.toFixed(2);
 
-            document.getElementById('ordersStats').style.display = 'block';
+            document.getElementById('ordersStats').classList.remove('hidden');
         }
     } catch (error) {
         showStatus('Error fetching order statistics: ' + error.message, 'error');

@@ -508,9 +508,9 @@
     <div class="section" id="allOrdersSection" class="hidden">
         <h2>All Orders Management</h2>
         <div class="controls">
-            <button onclick="fetchAllOrders()">Load All Orders</button>
+            <button onclick="fetchAllOrders();displayAllOrders();">Load All Orders</button>
         </div>
-        <div id="ordersStats" style="margin: 15px 0; padding: 10px; background: #f5f5f5; border: 1px solid #ddd; display: none;">
+        <div id="ordersStats" class="hidden" style="margin: 15px 0; padding: 10px; background: #f5f5f5; border: 1px solid #ddd; display: none;">
             <strong>Order Statistics:</strong>
             <span id="totalOrders"></span> |
             <span id="pendingOrders"></span> |
