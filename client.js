@@ -243,27 +243,6 @@ async function viewUserProfile(userId) {
     }
 }
 
-function filterUsers() {
-    const searchTerm = document.getElementById('userSearchBox').value.toLowerCase();
-
-    if (searchTerm === '') {
-        users = [...allUsers];
-    } else {
-        users = allUsers.filter(user =>
-            user.username.toLowerCase().includes(searchTerm) ||
-            user.email.toLowerCase().includes(searchTerm)
-        );
-    }
-
-    displayUsers();
-}
-
-function clearUserSearch() {
-    document.getElementById('userSearchBox').value = '';
-    users = [...allUsers];
-    displayUsers();
-}
-
 // Category
 // Fetch categories from the API
 async function fetchCategories() {
@@ -1167,44 +1146,6 @@ function calculateOrderStats() {
     document.getElementById('totalRevenue').textContent = stats.revenue.toFixed(2);
 
     document.getElementById('ordersStats').style.display = 'block';
-}
-
-// Filter orders based on search and status
-function filterOrders() {
-    const searchTerm = document.getElementById('orderSearchBox').value.toLowerCase();
-    const statusFilter = document.getElementById('orderStatusFilter').value;
-
-    filteredOrders = allOrders.filter(order => {
-        // Status filter
-        if (statusFilter && order.status !== statusFilter) {
-            return false;
-        }
-
-        // Search filter
-        if (searchTerm) {
-            const orderId = order.id.toString().toLowerCase();
-            const username = typeof order.user === 'object' ?
-                order.user.username.toLowerCase() : '';
-            const userEmail = typeof order.user === 'object' ?
-                order.user.email.toLowerCase() : '';
-
-            return orderId.includes(searchTerm) ||
-                username.includes(searchTerm) ||
-                userEmail.includes(searchTerm);
-        }
-
-        return true;
-    });
-
-    displayAllOrders();
-}
-
-// Clear order search
-function clearOrderSearch() {
-    document.getElementById('orderSearchBox').value = '';
-    document.getElementById('orderStatusFilter').value = '';
-    filteredOrders = [...allOrders];
-    displayAllOrders();
 }
 
 async function deleteOrder(orderId) {

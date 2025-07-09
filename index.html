@@ -453,10 +453,6 @@
         <h2>User Management</h2>
         <div class="controls">
             <button onclick="fetchUsers()">Load Users</button>
-            <div class="search-box">
-                <input type="text" id="userSearchBox" placeholder="Search users by username or email..." onkeyup="filterUsers()">
-                <button onclick="clearUserSearch()">Clear</button>
-            </div>
         </div>
         <table id="usersTable" class="hidden">
             <thead>
@@ -477,20 +473,6 @@
         <h2>All Orders Management</h2>
         <div class="controls">
             <button onclick="fetchAllOrders()">Load All Orders</button>
-            <div class="search-box" style="display: inline-block; margin-left: 20px;">
-                <input type="text" id="orderSearchBox" placeholder="Search by order ID, username, or status..." onkeyup="filterOrders()" style="width: 300px;">
-                <button onclick="clearOrderSearch()">Clear</button>
-            </div>
-            <div style="display: inline-block; margin-left: 20px;">
-                <label style="display: inline;">Filter by Status:</label>
-                <select id="orderStatusFilter" onchange="filterOrders()" style="padding: 5px;">
-                    <option value="">All Statuses</option>
-                    <option value="P">Pending</option>
-                    <option value="S">Shipped</option>
-                    <option value="D">Delivered</option>
-                    <option value="C">Cancelled</option>
-                </select>
-            </div>
         </div>
         <div id="ordersStats" style="margin: 15px 0; padding: 10px; background: #f5f5f5; border: 1px solid #ddd; display: none;">
             <strong>Order Statistics:</strong>
