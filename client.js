@@ -298,7 +298,7 @@ async function viewUserProfile(userId) {
 async function fetchCategories() {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
         const data = await response.json();
@@ -353,7 +353,7 @@ async function createCategory() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${authToken}`
+                'Authorization': `Token ${localStorage.authToken}`
             },
             body: JSON.stringify({
                 name,
@@ -384,7 +384,7 @@ async function deleteCategory(categoryId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/categories/delete/${categoryId}/`, {
             method: 'DELETE',
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
         if (response.ok) {
@@ -464,7 +464,7 @@ async function updateCategory() {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${authToken}`
+                'Authorization': `Token ${localStorage.authToken}`
             },
             body: JSON.stringify({
                 name,
@@ -565,7 +565,7 @@ async function createProduct() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${authToken}`
+                'Authorization': `Token ${localStorage.authToken}`
             },
             body: JSON.stringify({
                 name,
@@ -665,7 +665,7 @@ async function updateProduct() {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${authToken}`
+                'Authorization': `Token ${localStorage.authToken}`
             },
             body: JSON.stringify({
                 name,
@@ -698,7 +698,7 @@ async function deleteProduct(productId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/products/delete/${productId}/`, {
             method: 'DELETE',
-            headers: {'Authorization': `Token ${authToken}`}
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
         if (response.ok) {
