@@ -912,7 +912,7 @@ function displayCart() {
 async function loadCategories() {
     try {
         const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
-            method: 'DELETE',
+            method: 'GET',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
         const data = await response.json();
@@ -988,7 +988,7 @@ async function loadDiscounts() {
 
         data.forEach(discount => {
             const li = document.createElement('li');
-            li.textContent = `${discount.code} - ${discount.percentage}% off until ${discount.expiry_date}`;
+            li.textContent = `${discount.code} - ${discount.percentage}% off until ${discount.expiry_date} for the category: ${discount.category}`;
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.onclick = () => deleteDiscount(discount.id);
@@ -1001,6 +1001,7 @@ async function loadDiscounts() {
 }
 
 function toggleDiscountForm() {
+    loadCategories();
     const discountForm = document.getElementById('discountForm');
     if (discountForm.style.display === 'none' || discountForm.style.display === '') {
         discountForm.style.display = 'block';
