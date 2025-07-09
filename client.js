@@ -127,7 +127,11 @@ async function updateProfile() {
     const email = document.getElementById('updEmail').value;
     const phone = document.getElementById('updPhone').value;
     const address = document.getElementById('updAddress').value;
-    const date_of_birth = document.getElementById('updDateOfBirth').value;
+    let date_of_birth = '';
+    if(document.getElementById('updDateOfBirth').value === 'NaN-NaN-NaN')
+        date_of_birth = '';
+    else
+        date_of_birth = document.getElementById('updDateOfBirth').value;
 
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/update/`, {
