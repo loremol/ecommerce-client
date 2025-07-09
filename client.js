@@ -100,13 +100,36 @@ async function logout() {
     showStatus('Logged out successfully');
 }
 
+async function populateProfile() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/auth/profile/`, {
+            method: 'GET',
+            headers: {'Authorization': `Token ${localStorage.authToken}`},
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById('updUsername').value = data.username || '';
+            document.getElementById('updEmail').value = data.email || '';
+            document.getElementById('updPhone').value = data.phone || '';
+            document.getElementById('updAddress').value = data.address || '';
+            document.getElementById('updDateOfBirth').value = data.date_of_birth || '';
+        }
+        else {
+            showStatus(`Failed to fetch profile: ${data}`)
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
 async function updateProfile() {
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('updatePassword').value;
-    const phone = document.getElementById('phone').value;
-    const address = document.getElementById('address').value;
-    const dateOfBirth = document.getElementById('dateOfBirth').value;
+    const username = document.getElementById('updUsername').value;
+    const email = document.getElementById('updEmail').value;
+    const password = document.getElementById('updPassword').value;
+    const phone = document.getElementById('updPhone').value;
+    const address = document.getElementById('updAddress').value;
+    const date_of_birth = document.getElementById('updDateOfBirth').value;
 
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/update/`, {
@@ -115,7 +138,7 @@ async function updateProfile() {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${localStorage.authToken}`
             },
-            body: JSON.stringify({username, email, password, phone, address, dateOfBirth})
+            body: JSON.stringify({username, email, password, phone, address, date_of_birth})
         });
 
         const data = await response.json();
