@@ -995,13 +995,14 @@ async function loadDiscounts() {
             li.appendChild(deleteButton);
             discountList.appendChild(li);
         });
+
+
     } catch (error) {
         showStatus('Failed to load discounts: ' + error.message, 'error');
     }
 }
 
 function toggleDiscountForm() {
-    loadCategories();
     const discountForm = document.getElementById('discountForm');
     if (discountForm.style.display === 'none' || discountForm.style.display === '') {
         discountForm.style.display = 'block';

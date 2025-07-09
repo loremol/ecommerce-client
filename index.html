@@ -538,7 +538,7 @@
     <div class="section" id="discountsManagementSection" class="hidden">
         <h2>Manage Discounts</h2>
         <div class="auth-section">
-            <button onclick="loadDiscounts()">Load Discounts</button>
+            <button onclick="loadDiscounts();loadCategories();">Load Discounts</button>
             <button onclick="toggleDiscountForm()">Add Discount</button>
         </div>
         <form id="discountForm" style="display: none;" onsubmit="createDiscount();">
