@@ -1137,7 +1137,7 @@ function displayAllOrders() {
             </td>
             <td>
                 <button onclick="viewOrderDetails(${order.id})">View Details</button>
-                <button onclick="deleteOrderAdmin(${order.id})" class="btn-danger">Delete</button>
+                <button onclick="deleteOrder(${order.id})" class="btn-danger">Delete</button>
             </td>
         `;
         tbody.appendChild(row);
@@ -1207,8 +1207,7 @@ function clearOrderSearch() {
     displayAllOrders();
 }
 
-// Delete order (admin version that refreshes all orders)
-async function deleteOrderAdmin(orderId) {
+async function deleteOrder(orderId) {
     if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
         return;
     }
@@ -1231,8 +1230,6 @@ async function deleteOrderAdmin(orderId) {
         showStatus('Network error: ' + error.message, 'error');
     }
 }
-
-
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function () {
