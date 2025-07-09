@@ -1002,9 +1002,9 @@ function toggleDiscountForm() {
     const discountForm = document.getElementById('discountForm');
     if (discountForm.style.display === 'none' || discountForm.style.display === '') {
         populateDiscountCategoryDropdown();
-        discountForm.style.display = 'block';
+        discountForm.classList.remove("hidden");
     } else {
-        discountForm.style.display = 'none';
+        discountForm.classList.add("hidden");
     }
 }
 
