@@ -1234,6 +1234,40 @@ function displayAllOrders() {
         'C': 'Cancelled'
     };
 
+    allOrders.forEach(order => {
+        const row = document.createElement('tr');
+
+        const userID = `User #${order.user}`;
+
+        row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${userID}</td>
+            <td>${new Date(order.date).toLocaleDateString()}</td>
+            <td>€${order.total}</td>
+            <td>
+                <span style="background: ${statusBadgeColors[order.status]}; 
+                           color: white; 
+                           padding: 3px 8px; 
+                           border-radius: 3px; 
+                           font-size: 0.9em;">
+                    ${statusNames[order.status] || order.status}
+                </span>
+                <select onchange="updateOrderStatus(${order.id}, this.value)" 
+                        style="padding: 5px; margin-left: 10px;">
+                    <option value="">Change Status</option>
+                    <option value="P" ${order.status === 'P' ? 'disabled' : ''}>Pending</option>
+                    <option value="S" ${order.status === 'S' ? 'disabled' : ''}>Shipped</option>
+                    <option value="D" ${order.status === 'D' ? 'disabled' : ''}>Delivered</option>
+                    <option value="C" ${order.status === 'C' ? 'disabled' : ''}>Cancelled</option>
+                </select>
+            </td>
+            <td>
+                <button onclick="viewOrderDetails(${order.id})">View Details</button>
+                <button onclick="deleteOrder(${order.id})" class="btn-danger">Delete</button>
+            </td>`;
+        tbody.appendChild(row);
+    });
+
     document.getElementById('allOrdersTable').classList.remove('hidden');
 }
 
