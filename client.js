@@ -122,26 +122,12 @@ async function populateProfile() {
     }
 }
 
-function formatDateToYYYYMMDD(date) {
-    if (date === null)
-        return '';
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-    if (formattedDate.includes("NaN"))
-        return '';
-    else return formattedDate;
-}
-
-
 async function updateProfile() {
     const username = document.getElementById('updUsername').value;
     const email = document.getElementById('updEmail').value;
     const phone = document.getElementById('updPhone').value;
     const address = document.getElementById('updAddress').value;
-    const date_of_birth = formatDateToYYYYMMDD(new Date(document.getElementById('updDateOfBirth').value));
+    const date_of_birth = document.getElementById('updDateOfBirth').value;
 
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/update/`, {
