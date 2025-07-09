@@ -905,7 +905,7 @@ function displayOrders() {
     orders.forEach(order => {
         const row = document.createElement('tr');
 
-        let cancelOrder = `<button onclick="updateOrderStatus(${order.id}, 'C')"
+        let cancelOrderButton = `<button onclick="updateOrderStatus(${order.id}, 'C')"
                     class="btn-danger" style="margin-left: 10px;"> Cancel Order</button>`;
 
 
@@ -935,7 +935,7 @@ function displayOrders() {
                            font-size: 0.9em;">
                     ${statusNames[order.status] || order.status}
                 </span>
-                ${statusControl}
+                ${cancelOrderButton}
             </td>
             <td>
                 <button onclick="viewOrderDetails(${order.id})">View Details</button>
