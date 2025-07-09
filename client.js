@@ -115,7 +115,7 @@ function showLoggedOutState() {
     document.getElementById('productsSection').classList.add('hidden');
     document.getElementById('cartSection').classList.add('hidden');
     document.getElementById('ordersSection').classList.add('hidden');
-    document.getElementById('userInfo').classList.add('hidden');
+    document.getElementById('userManagementSection').classList.add('hidden');
 }
 
 // User Management (Moderators Only)
