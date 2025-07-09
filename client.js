@@ -109,14 +109,9 @@ async function updateProfile() {
     const address = document.getElementById('address').value;
     const dateOfBirth = document.getElementById('dateOfBirth').value;
 
-    if (!username || !email) {
-        showStatus('Please fill in all fields', 'error');
-        return;
-    }
-
     try {
         const response = await fetch(`${API_ENDPOINT}/auth/update/`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${localStorage.authToken}`
