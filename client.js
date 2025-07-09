@@ -243,7 +243,7 @@ async function toggleUserBan(username, currentlyBanned) {
             `${API_ENDPOINT}/auth/ban/`;
 
         const response = await fetch(endpoint, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${localStorage.authToken}`
