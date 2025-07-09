@@ -905,30 +905,9 @@ function displayOrders() {
     orders.forEach(order => {
         const row = document.createElement('tr');
 
-        // Create status update dropdown for admins or cancel button for users
-        let statusControl = '';
+        let cancelOrder = `<button onclick="updateOrderStatus(${order.id}, 'C')"
+                    class="btn-danger" style="margin-left: 10px;"> Cancel Order</button>`;
 
-        if (currentUser && currentUser.is_staff) {
-            // Admin can change status
-            statusControl = `
-                <select onchange="updateOrderStatus(${order.id}, this.value)" 
-                        style="padding: 5px; margin-left: 10px;">
-                    <option value="">Change Status</option>
-                    <option value="P" ${order.status === 'P' ? 'disabled' : ''}>Pending</option>
-                    <option value="S" ${order.status === 'S' ? 'disabled' : ''}>Shipped</option>
-                    <option value="D" ${order.status === 'D' ? 'disabled' : ''}>Delivered</option>
-                    <option value="C" ${order.status === 'C' ? 'disabled' : ''}>Cancelled</option>
-                </select>
-            `;
-        } else if (order.status === 'P') {
-            // Regular users can only cancel pending orders
-            statusControl = `
-                <button onclick="updateOrderStatus(${order.id}, 'C')" 
-                        class="btn-danger" style="margin-left: 10px;">
-                    Cancel Order
-                </button>
-            `;
-        }
 
         const statusBadgeColors = {
             'P': '#f39c12',  // Orange for Pending
@@ -960,9 +939,6 @@ function displayOrders() {
             </td>
             <td>
                 <button onclick="viewOrderDetails(${order.id})">View Details</button>
-                ${order.status === 'P' && (currentUser && currentUser.is_staff) ?
-            `<button onclick="deleteOrder(${order.id})" class="btn-danger">Delete</button>` :
-            ''}
             </td>
         `;
         tbody.appendChild(row);
@@ -1081,30 +1057,6 @@ async function updateOrderStatus(orderId, newStatus) {
             }
         } else {
             showStatus(data.error || 'Failed to update order', 'error');
-        }
-    } catch (error) {
-        showStatus('Network error: ' + error.message, 'error');
-    }
-}
-
-async function deleteOrder(orderId) {
-    if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_ENDPOINT}/orders/cancel/${orderId}/`, {
-            method: 'DELETE',
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
-        });
-
-        if (response.ok) {
-            fetchOrders();
-            fetchProducts(); // Refresh products to show restored stock
-            showStatus('Order deleted successfully');
-        } else {
-            const data = await response.json();
-            showStatus(data.error || 'Failed to delete order', 'error');
         }
     } catch (error) {
         showStatus('Network error: ' + error.message, 'error');
@@ -1271,7 +1223,7 @@ async function deleteOrderAdmin(orderId) {
 
         if (response.ok) {
             await fetchAllOrders(); // Refresh all orders
-            fetchProducts(); // Refresh products to show restored stock
+            await fetchProducts(); // Refresh products to show restored stock
             showStatus('Order deleted successfully');
         } else {
             const data = await response.json();
