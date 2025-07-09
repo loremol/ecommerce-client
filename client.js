@@ -923,7 +923,6 @@ async function populateDiscountCategoryDropdown() {
     }
 }
 
-// Add this function to create a discount
 async function createDiscount() {
     const code = document.getElementById('discount_code').value;
     const percentage = parseFloat(document.getElementById('discount_percentage').value);
