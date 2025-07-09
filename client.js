@@ -112,6 +112,7 @@ function showLoggedInState() {
 
 function showLoggedOutState() {
     document.getElementById('authSection').classList.remove('hidden');
+    document.getElementById('categoriesSection').classList.add('hidden');
     document.getElementById('productsSection').classList.add('hidden');
     document.getElementById('cartSection').classList.add('hidden');
     document.getElementById('ordersSection').classList.add('hidden');
