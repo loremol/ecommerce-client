@@ -4,11 +4,10 @@ let currentUser = null;
 let categories = [];
 let products = [];
 let cart = [];
-let orders = [];
+let ownOrders = [];
+
 let users = [];
-let allUsers = [];
 let allOrders = [];
-let filteredOrders = [];
 
 
 // Utility function to show status messages
@@ -74,7 +73,7 @@ async function login() {
         const data = await response.json();
 
         if (response.ok) {
-            authToken = data.token;
+            localStorage.setItem('authToken', data.token);
             currentUser = data.user;
             showLoggedInState();
             showStatus(`Welcome back, ${currentUser.username || currentUser.email}!`);
@@ -84,8 +83,6 @@ async function login() {
     } catch (error) {
         showStatus('Network error: ' + error.message, 'error');
     }
-
-    localStorage.setItem('authToken', authToken);
 }
 
 async function logout() {
@@ -139,7 +136,6 @@ async function fetchUsers() {
 
         if (response.ok) {
             users = data;
-            allUsers = [...data]; // Store original list for search
             displayUsers();
             showStatus('Users loaded successfully');
         } else {
@@ -866,7 +862,7 @@ async function fetchOrders() {
         const data = await response.json();
 
         if (response.ok) {
-            orders = data;
+            ownOrders = data;
             displayOrders();
             showStatus('Orders loaded successfully');
         } else {
@@ -881,7 +877,7 @@ function displayOrders() {
     const tbody = document.querySelector('#ordersTable tbody');
     tbody.innerHTML = '';
 
-    orders.forEach(order => {
+    ownOrders.forEach(order => {
         const row = document.createElement('tr');
 
         let cancelOrderButton = `<button onclick="updateOrderStatus(${order.id}, 'C')"
@@ -1042,7 +1038,7 @@ async function updateOrderStatus(orderId, newStatus) {
     }
 }
 
-// Fetch all orders (admin only)
+// admin
 async function fetchAllOrders() {
     try {
         const response = await fetch(`${API_ENDPOINT}/orders/all/`, {
@@ -1053,9 +1049,8 @@ async function fetchAllOrders() {
 
         if (response.ok) {
             allOrders = data;
-            filteredOrders = [...allOrders];
             displayAllOrders();
-            calculateOrderStats();
+            fetchOrderStatistics();
             showStatus('All orders loaded successfully');
         } else {
             showStatus(data.error || 'Failed to fetch all orders', 'error');
@@ -1065,7 +1060,6 @@ async function fetchAllOrders() {
     }
 }
 
-// Display all orders with user information
 function displayAllOrders() {
     const tbody = document.querySelector('#allOrdersTable tbody');
     tbody.innerHTML = '';
@@ -1084,69 +1078,35 @@ function displayAllOrders() {
         'C': 'Cancelled'
     };
 
-    filteredOrders.forEach(order => {
-        const row = document.createElement('tr');
-
-        // Extract username from user data
-        const username = typeof order.user === 'object' ? order.user.username : `User #${order.user}`;
-        const userEmail = typeof order.user === 'object' ? order.user.email : 'N/A';
-
-        row.innerHTML = `
-            <td>${order.id}</td>
-            <td>${username}</td>
-            <td>${userEmail}</td>
-            <td>${new Date(order.date).toLocaleDateString()}</td>
-            <td>€${order.total}</td>
-            <td>
-                <span style="background: ${statusBadgeColors[order.status]}; 
-                           color: white; 
-                           padding: 3px 8px; 
-                           border-radius: 3px; 
-                           font-size: 0.9em;">
-                    ${statusNames[order.status] || order.status}
-                </span>
-                <select onchange="updateOrderStatus(${order.id}, this.value)" 
-                        style="padding: 5px; margin-left: 10px;">
-                    <option value="">Change Status</option>
-                    <option value="P" ${order.status === 'P' ? 'disabled' : ''}>Pending</option>
-                    <option value="S" ${order.status === 'S' ? 'disabled' : ''}>Shipped</option>
-                    <option value="D" ${order.status === 'D' ? 'disabled' : ''}>Delivered</option>
-                    <option value="C" ${order.status === 'C' ? 'disabled' : ''}>Cancelled</option>
-                </select>
-            </td>
-            <td>
-                <button onclick="viewOrderDetails(${order.id})">View Details</button>
-                <button onclick="deleteOrder(${order.id})" class="btn-danger">Delete</button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-
     document.getElementById('allOrdersTable').classList.remove('hidden');
 }
 
-// Calculate and display order statistics
-function calculateOrderStats() {
-    const stats = {
-        total: allOrders.length,
-        pending: allOrders.filter(o => o.status === 'P').length,
-        shipped: allOrders.filter(o => o.status === 'S').length,
-        delivered: allOrders.filter(o => o.status === 'D').length,
-        cancelled: allOrders.filter(o => o.status === 'C').length,
-        revenue: allOrders
-            .filter(o => o.status !== 'C') // Exclude cancelled orders from revenue
-            .reduce((sum, o) => sum + parseFloat(o.total), 0)
-    };
+function fetchOrderStatistics() {
+    try {
+        const response = await fetch(`${API_ENDPOINT}/orders/stats/`, {
+            method: 'GET',
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
+        });
 
-    document.getElementById('totalOrders').textContent = `Total: ${stats.total}`;
-    document.getElementById('pendingOrders').textContent = `Pending: ${stats.pending}`;
-    document.getElementById('shippedOrders').textContent = `Shipped: ${stats.shipped}`;
-    document.getElementById('deliveredOrders').textContent = `Delivered: ${stats.delivered}`;
-    document.getElementById('cancelledOrders').textContent = `Cancelled: ${stats.cancelled}`;
-    document.getElementById('totalRevenue').textContent = stats.revenue.toFixed(2);
+        if (!response.ok) {
+            throw new Error('Failed to fetch order statistics');
+        }
 
-    document.getElementById('ordersStats').style.display = 'block';
+        const data = await response.json();
+
+        document.getElementById('totalOrders').textContent = `Total: ${data.total_orders}`;
+        document.getElementById('pendingOrders').textContent = `Pending: ${data.pending_orders}`;
+        document.getElementById('shippedOrders').textContent = `Shipped: ${data.shipped_orders}`;
+        document.getElementById('deliveredOrders').textContent = `Delivered: ${data.delivered_orders}`;
+        document.getElementById('cancelledOrders').textContent = `Cancelled: ${data.cancelled_orders}`;
+        document.getElementById('totalRevenue').textContent = data.total_revenue.toFixed(2);
+
+        document.getElementById('ordersStats').style.display = 'block';
+    } catch (error) {
+        showStatus('Error fetching order statistics: ' + error.message, 'error');
+    }
 }
+
 
 async function deleteOrder(orderId) {
     if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
