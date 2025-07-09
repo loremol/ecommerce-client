@@ -499,6 +499,7 @@ function displayProducts() {
 
     document.getElementById('productsTable').classList.remove('hidden');
 }
+
 function showAddProductForm() {
     fetchCategories(); // Load categories when showing the form
     document.getElementById('addProductForm').classList.remove('hidden');
@@ -656,6 +657,7 @@ async function updateProduct() {
         showStatus('Network error: ' + error.message, 'error');
     }
 }
+
 async function deleteProduct(productId) {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
@@ -963,6 +965,7 @@ function displayOrders() {
 
     document.getElementById('ordersTable').classList.remove('hidden');
 }
+
 async function viewOrderDetails(orderId) {
     try {
         const response = await fetch(`${API_ENDPOINT}/orders/${orderId}/`, {
@@ -975,30 +978,6 @@ async function viewOrderDetails(orderId) {
             alert(`Order Details:\n${JSON.stringify(data, null, 2)}`);
         } else {
             showStatus(data.message || 'Failed to fetch order details', 'error');
-        }
-    } catch (error) {
-        showStatus('Network error: ' + error.message, 'error');
-    }
-}
-
-async function deleteOrder(orderId) {
-    if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_ENDPOINT}/orders/cancel/${orderId}/`, {
-            method: 'DELETE',
-            headers: {'Authorization': `Token ${localStorage.authToken}`}
-        });
-
-        if (response.ok) {
-            fetchOrders();
-            fetchProducts(); // Refresh products to show restored stock
-            showStatus('Order deleted successfully');
-        } else {
-            const data = await response.json();
-            showStatus(data.error || 'Failed to delete order', 'error');
         }
     } catch (error) {
         showStatus('Network error: ' + error.message, 'error');
@@ -1054,6 +1033,73 @@ async function checkout() {
         showStatus('Network error during checkout: ' + error.message, 'error');
     }
 }
+
+async function updateOrderStatus(orderId, newStatus) {
+    const statusNames = {
+        'P': 'Pending',
+        'S': 'Shipped',
+        'D': 'Delivered',
+        'C': 'Cancelled'
+    };
+
+    if (!confirm(`Are you sure you want to change this order to "${statusNames[newStatus]}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/orders/update/${orderId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${localStorage.authToken}`
+            },
+            body: JSON.stringify({
+                status: newStatus
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showStatus(`Order #${orderId} updated successfully`);
+            fetchOrders(); // Refresh the orders list
+
+            // If the order was cancelled, also refresh products to show updated stock
+            if (newStatus === 'C') {
+                fetchProducts();
+            }
+        } else {
+            showStatus(data.error || 'Failed to update order', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
+async function deleteOrder(orderId) {
+    if (!confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/orders/cancel/${orderId}/`, {
+            method: 'DELETE',
+            headers: {'Authorization': `Token ${localStorage.authToken}`}
+        });
+
+        if (response.ok) {
+            fetchOrders();
+            fetchProducts(); // Refresh products to show restored stock
+            showStatus('Order deleted successfully');
+        } else {
+            const data = await response.json();
+            showStatus(data.error || 'Failed to delete order', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function () {
