@@ -294,6 +294,7 @@ function displayCategories() {
             <td>${category.name}</td>
             <td>${category.description || 'No description'}</td>
             <td>
+                <button onclick="showUpdateCategoryForm(${category.id})" class="btn-warning">Edit</button>
                 <button onclick="deleteCategory(${category.id})" class="btn-danger">Delete</button>
             </td>
         `;
@@ -347,13 +348,13 @@ async function deleteCategory(categoryId) {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/${categoryId}/`, {
+        const response = await fetch(`${API_ENDPOINT}/store/categories/delete/${categoryId}/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${authToken}`}
         });
 
         if (response.ok) {
-            fetchCategories(); // Refresh the categories list
+            await fetchCategories();
             showStatus('Category deleted successfully');
         } else {
             const data = await response.json();
@@ -364,12 +365,10 @@ async function deleteCategory(categoryId) {
     }
 }
 
-// Show the add category form
 function showAddCategoryForm() {
     document.getElementById('addCategoryForm').classList.remove('hidden');
 }
 
-// Hide the add category form and clear inputs
 function hideAddCategoryForm() {
     document.getElementById('addCategoryForm').classList.add('hidden');
     document.getElementById('categoryName').value = '';
@@ -389,6 +388,67 @@ function populateCategorySelect() {
             option.textContent = category.name;
             categorySelect.appendChild(option);
         });
+    }
+}
+
+function showUpdateCategoryForm(categoryId) {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) {
+        showStatus('Category not found', 'error');
+        return;
+    }
+
+    document.getElementById('updateCategoryId').value = category.id;
+    document.getElementById('updateCategoryName').value = category.name;
+    document.getElementById('updateCategoryDescription').value = category.description || '';
+
+    // Hide add form if visible
+    hideAddCategoryForm();
+
+    document.getElementById('updateCategoryForm').classList.remove('hidden');
+}
+
+function hideUpdateCategoryForm() {
+    document.getElementById('updateCategoryForm').classList.add('hidden');
+    document.getElementById('updateCategoryId').value = '';
+    document.getElementById('updateCategoryName').value = '';
+    document.getElementById('updateCategoryDescription').value = '';
+}
+
+async function updateCategory() {
+    const categoryId = document.getElementById('updateCategoryId').value;
+    const name = document.getElementById('updateCategoryName').value.trim();
+    const description = document.getElementById('updateCategoryDescription').value.trim();
+
+    if (!name) {
+        showStatus('Please enter a category name', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/store/categories/update/${categoryId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${authToken}`
+            },
+            body: JSON.stringify({
+                name,
+                description
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            hideUpdateCategoryForm();
+            fetchCategories(); // Refresh the categories list
+            showStatus('Category updated successfully');
+        } else {
+            showStatus(data.message || 'Failed to update category', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
     }
 }
 
@@ -430,6 +490,7 @@ function displayProducts() {
             <td>${product.dimensions}</td>
             <td>
                 <button onclick="addToCart(${product.id})" class="btn-success">Add to Cart</button>
+                <button onclick="showUpdateProductForm(${product.id})" class="btn-warning">Edit</button>
                 <button onclick="deleteProduct(${product.id})" class="btn-danger">Delete</button>
             </td>
         `;
@@ -438,7 +499,6 @@ function displayProducts() {
 
     document.getElementById('productsTable').classList.remove('hidden');
 }
-
 function showAddProductForm() {
     fetchCategories(); // Load categories when showing the form
     document.getElementById('addProductForm').classList.remove('hidden');
@@ -497,11 +557,118 @@ async function createProduct() {
     }
 }
 
+function showUpdateProductForm(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) {
+        showStatus('Product not found', 'error');
+        return;
+    }
+
+    // Populate category dropdown first
+    populateUpdateCategorySelect();
+
+    document.getElementById('updateProductId').value = product.id;
+    document.getElementById('updateProductName').value = product.name;
+    document.getElementById('updateProductPrice').value = product.price;
+    document.getElementById('updateProductDescription').value = product.description || '';
+    document.getElementById('updateProductCategory').value = product.category.id;
+    document.getElementById('updateProductStock').value = product.stock_quantity;
+    document.getElementById('updateProductWeight').value = product.weight || '';
+    document.getElementById('updateProductDimensions').value = product.dimensions || '';
+
+    // Hide add form if visible
+    hideAddProductForm();
+
+    document.getElementById('updateProductForm').classList.remove('hidden');
+}
+
+function hideUpdateProductForm() {
+    document.getElementById('updateProductForm').classList.add('hidden');
+    document.getElementById('updateProductId').value = '';
+    document.getElementById('updateProductName').value = '';
+    document.getElementById('updateProductPrice').value = '';
+    document.getElementById('updateProductDescription').value = '';
+    document.getElementById('updateProductCategory').value = '';
+    document.getElementById('updateProductStock').value = '';
+    document.getElementById('updateProductWeight').value = '';
+    document.getElementById('updateProductDimensions').value = '';
+}
+
+function populateUpdateCategorySelect() {
+    const categorySelect = document.getElementById('updateProductCategory');
+    if (!categorySelect) return;
+
+    categorySelect.innerHTML = '<option value="">Select a category</option>';
+
+    if (categories && categories.length > 0) {
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+    }
+}
+
+async function updateProduct() {
+    const productId = document.getElementById('updateProductId').value;
+    const name = document.getElementById('updateProductName').value;
+    const price = document.getElementById('updateProductPrice').value;
+    const description = document.getElementById('updateProductDescription').value;
+    const categoryId = document.getElementById('updateProductCategory').value;
+    const stock_quantity = document.getElementById('updateProductStock').value || 0;
+    const weight = document.getElementById('updateProductWeight').value || '';
+    const dimensions = document.getElementById('updateProductDimensions').value || '';
+
+    if (!name || !price || !categoryId) {
+        showStatus('Please fill in name, price, and category', 'error');
+        return;
+    }
+
+    // Find the category object
+    const category = categories.find(c => c.id === parseInt(categoryId));
+    if (!category) {
+        showStatus('Invalid category selected', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINT}/store/products/update/${productId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${authToken}`
+            },
+            body: JSON.stringify({
+                name,
+                price: parseFloat(price),
+                description,
+                category: category, // Send the full category object as expected by ProductSerializer
+                stock_quantity: parseInt(stock_quantity),
+                weight,
+                dimensions
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            hideUpdateProductForm();
+            fetchProducts();
+            showStatus('Product updated successfully');
+        } else {
+            showStatus(data.message || 'Failed to update product', 'error');
+        }
+    } catch (error) {
+        showStatus('Network error: ' + error.message, 'error');
+    }
+}
+
 async function deleteProduct(productId) {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/products/${productId}/`, {
+        const response = await fetch(`${API_ENDPOINT}/store/products/delete/${productId}/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${authToken}`}
         });

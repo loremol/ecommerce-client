@@ -96,6 +96,19 @@
     .btn-danger {
         background: #c00;
     }
+
+    .btn-warning {
+        background: #f60;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+        margin: 5px 0;
+    }
+
+    .btn-warning:hover {
+        background: #e50;
+    }
     
     .btn-success {
         background: #090;
@@ -250,6 +263,21 @@
             <button onclick="hideAddCategoryForm()" class="btn-danger">Cancel</button>
         </div>
 
+        <div id="updateCategoryForm" class="hidden auth-form" style="margin-bottom: 20px;">
+            <h3>Update Category</h3>
+            <input type="hidden" id="updateCategoryId">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="updateCategoryName" placeholder="Category name">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" id="updateCategoryDescription" placeholder="Category description">
+            </div>
+            <button onclick="updateCategory()" class="btn-success">Update Category</button>
+            <button onclick="hideUpdateCategoryForm()" class="btn-danger">Cancel</button>
+        </div>
+
         <table id="categoriesTable" class="hidden">
             <thead>
             <tr>
@@ -305,6 +333,43 @@
             </div>
             <button onclick="createProduct()" class="btn-success">Add Product</button>
             <button onclick="hideAddProductForm()" class="btn-danger">Cancel</button>
+        </div>
+
+        <div id="updateProductForm" class="hidden auth-form" style="margin-bottom: 20px;">
+            <h3>Update Product</h3>
+            <input type="hidden" id="updateProductId">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="updateProductName" placeholder="Product name">
+            </div>
+            <div class="form-group">
+                <label>Price:</label>
+                <input type="number" id="updateProductPrice" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" id="updateProductDescription" placeholder="Product description">
+            </div>
+            <div class="form-group">
+                <label>Category:</label>
+                <select id="updateProductCategory">
+                    <option value="">Select a category</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Stock Quantity:</label>
+                <input type="number" id="updateProductStock" placeholder="0" min="0">
+            </div>
+            <div class="form-group">
+                <label>Weight:</label>
+                <input type="text" id="updateProductWeight" placeholder="e.g., 1kg, 500g">
+            </div>
+            <div class="form-group">
+                <label>Dimensions:</label>
+                <input type="text" id="updateProductDimensions" placeholder="e.g., 10x5x3 cm">
+            </div>
+            <button onclick="updateProduct()" class="btn-success">Update Product</button>
+            <button onclick="hideUpdateProductForm()" class="btn-danger">Cancel</button>
         </div>
 
         <table id="productsTable" class="hidden">
