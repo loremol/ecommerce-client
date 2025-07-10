@@ -1,4 +1,4 @@
-const API_ENDPOINT = 'https://ecommerce-django-production-f55b.up.railway.app';
+const API_ENDPOINT = 'http://127.0.0.1:8000';
 
 let currentUser = null;
 let categories = [];
@@ -45,7 +45,7 @@ async function register() {
             document.getElementById('regUsername').value = '';
             document.getElementById('regEmail').value = '';
             document.getElementById('regPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
+            document.getElementById('regConfirmPassword').value = '';
         } else {
             showStatus(data.message || 'Registration failed', 'error');
         }
