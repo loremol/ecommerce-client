@@ -3,564 +3,536 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce API Interface</title>
+    <title>E-commerce API Client</title>
     <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        padding: 20px;
-    }
-    
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        border: 1px solid #ddd;
-        padding: 20px;
-    }
-    
-    h1 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 20px;
-        font-size: 1.5em;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ccc;
-    }
-    
-    .section {
-        margin-bottom: 30px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        background: #f9f9f9;
-    }
-    
-    .section h2 {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 1.2em;
-    }
-    
-    .auth-section {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-    
-    .auth-form {
-        background: white;
-        padding: 15px;
-        border: 1px solid #ddd;
-        flex: 1;
-        min-width: 300px;
-    }
-    
-    .form-group {
-        margin-bottom: 10px;
-    }
-    
-    label {
-        display: block;
-        margin-bottom: 5px;
-        color: #555;
-    }
-    
-    input[type="text"], 
-    input[type="email"], 
-    input[type="password"], 
-    input[type="number"] {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-    }
-    
-    button {
-        background: #555;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        cursor: pointer;
-        margin: 5px 0;
-    }
-    
-    button:hover {
-        background: #333;
-    }
-    
-    .btn-danger {
-        background: #c00;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .btn-warning {
-        background: #f60;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        cursor: pointer;
-        margin: 5px 0;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
 
-    .btn-warning:hover {
-        background: #e50;
-    }
-    
-    .btn-success {
-        background: #090;
-    }
-    
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-        border: 1px solid #ddd;
-    }
-    
-    th, td {
-        padding: 8px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
-    
-    th {
-        background: #555;
-        color: white;
-    }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
 
-    .status {
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #ddd;
-    }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
 
-    .status.success {
-        background: #dfd;
-        border-color: #0a0;
-    }
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
 
-    .status.error {
-        background: #fdd;
-        border-color: #a00;
-    }
-    
-    .hidden {
-        display: none;
-    }
-    
-    .controls {
-        margin-bottom: 15px;
-    }
+        .auth-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
 
-    #userInfo {
-        background: #555;
-        color: white;
-        padding: 10px;
-        margin-bottom: 15px;
-    }
+        .auth-form {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            flex: 1;
+            min-width: 300px;
+        }
 
-    .user-status {
-        padding: 2px 6px;
-        border-radius: 3px;
-        font-size: 0.8em;
-        font-weight: bold;
-    }
+        .form-group {
+            margin-bottom: 10px;
+        }
 
-    .user-status.active {
-        background: #090;
-        color: white;
-    }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
 
-    .user-status.banned {
-        background: #c00;
-        color: white;
-    }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
 
-    .moderator-badge {
-        background: #f60;
-        color: white;
-        padding: 2px 6px;
-        border-radius: 3px;
-        font-size: 0.8em;
-        font-weight: bold;
-        margin-left: 10px;
-    }
+        button {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
 
-    .search-box {
-        display: inline-block;
-        margin: 10px 0;
-    }
+        button:hover {
+            background: #333;
+        }
 
-    .search-box input {
-        padding: 8px;
-        border: 1px solid #ddd;
-        margin-right: 5px;
-    }
+        .btn-danger {
+            background: #c00;
+        }
 
-    #ordersStats span {
-        font-weight: normal;
-        margin-right: 15px;
-    }
+        .btn-warning {
+            background: #f60;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
 
-    #ordersStats strong {
-        color: #333;
-    }
-</style>
+        .btn-warning:hover {
+            background: #e50;
+        }
+
+        .btn-success {
+            background: #090;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #555;
+            color: white;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+
+        .status.success {
+            background: #dfd;
+            border-color: #0a0;
+        }
+
+        .status.error {
+            background: #fdd;
+            border-color: #a00;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+        }
+
+        #userInfo {
+            background: #555;
+            color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .user-status {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .user-status.active {
+            background: #090;
+            color: white;
+        }
+
+        .user-status.banned {
+            background: #c00;
+            color: white;
+        }
+
+        #ordersStats span {
+            font-weight: normal;
+            margin-right: 15px;
+        }
+
+        #ordersStats strong {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>E-commerce API Client</h1>
+<h1>E-commerce API Client</h1>
 
-    <div id="userInfo" class="hidden">
-        <strong>Logged in as:</strong> <span id="currentUser"></span>
-        <button onclick="logout()" class="btn-danger" style="float: right;">Logout</button>
-    </div>
+<div id="userInfo" class="hidden">
+    <strong>Logged in as:</strong> <span id="currentUser"></span>
+    <button onclick="logout()" class="btn-danger" style="float: right;">Logout</button>
+</div>
 
-    <div id="statusMessage"></div>
+<div id="statusMessage"></div>
 
-    <!-- Authentication Section -->
-    <div class="section" id="authSection">
-        <h2>Authentication</h2>
-        <div class="auth-section">
-            <div class="auth-form">
-                <h3>Register</h3>
-                <div class="form-group">
-                    <label>Username:</label>
-                    <input type="text" id="regUsername" placeholder="Enter username">
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="regEmail" placeholder="Enter email">
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input type="password" id="regPassword" placeholder="Enter password">
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password:</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirm password">
-                </div>
-                <button onclick="register()">Register</button>
+<!-- Authentication Section -->
+<div class="section" id="authSection">
+    <h2>Authentication</h2>
+    <div class="auth-section">
+        <div class="auth-form">
+            <h3>Register</h3>
+            <div class="form-group">
+                <label for="regUsername">Username:</label>
+                <input type="text" id="regUsername" placeholder="Enter username">
             </div>
-
-            <div class="auth-form">
-                <h3>Login</h3>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="loginEmail" placeholder="Enter email">
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input type="password" id="loginPassword" placeholder="Enter password">
-                </div>
-                <button onclick="login()">Login</button>
+            <div class="form-group">
+                <label for="regEmail">Email:</label>
+                <input type="email" id="regEmail" placeholder="Enter email">
             </div>
+            <div class="form-group">
+                <label for="regPassword">Password:</label>
+                <input type="password" id="regPassword" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <label for="regConfirmPassword">Confirm Password:</label>
+                <input type="password" id="regConfirmPassword" placeholder="Confirm password">
+            </div>
+            <button onclick="register()">Register</button>
+        </div>
+
+        <div class="auth-form">
+            <h3>Login</h3>
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <button onclick="login()">Login</button>
         </div>
     </div>
+</div>
 
-    <!-- Profile -->
-    <div class="section" id="profileSection">
-        <h2>Update Profile</h2>
-        <div class="controls">
-            <button onclick="populateProfile()">Populate Profile</button>
+<!-- Profile -->
+<div class="section" id="profileSection">
+    <h2>Update Your Profile</h2>
+    <div class="controls">
+        <button onclick="populateProfile()">Populate Profile</button>
+    </div>
+    <div id="profileForm">
+        <div class="form-group">
+            <label for="updUsername">Username:</label>
+            <input type="text" id="updUsername" name="username">
         </div>
-        <div id="profileForm">
-            <div class="form-group">
-                <label for="updUsername">Username:</label>
-                <input type="text" id="updUsername" name="username">
-            </div>
-            <div class="form-group">
-                <label for="updEmail">Email:</label>
-                <input type="email" id="updEmail" name="email">
-            </div>
-            <div class="form-group">
-                <label for="updPhone">Phone:</label>
-                <input type="tel" id="updPhone" name="phone">
-            </div>
-            <div class="form-group">
-                <label for="updAddress">Address:</label>
-                <input type="text" id="updAddress" name="address">
-            </div>
-            <div class="form-group">
-                <label for="updDateOfBirth">Date of Birth:</label>
-                <input type="date" id="updDateOfBirth" name="dateOfBirth">
-            </div>
-            <button onclick="updateProfile()">Update Profile</button>
+        <div class="form-group">
+            <label for="updEmail">Email:</label>
+            <input type="email" id="updEmail" name="email">
         </div>
+        <div class="form-group">
+            <label for="updPhone">Phone:</label>
+            <input type="tel" id="updPhone" name="phone">
+        </div>
+        <div class="form-group">
+            <label for="updAddress">Address:</label>
+            <input type="text" id="updAddress" name="address">
+        </div>
+        <div class="form-group">
+            <label for="updDateOfBirth">Date of Birth:</label>
+            <input type="date" id="updDateOfBirth" name="dateOfBirth">
+        </div>
+        <button onclick="updateProfile()">Update Profile</button>
+    </div>
+</div>
+
+
+<!-- Categories Section -->
+<div class="section hidden" id="categoriesSection">
+    <h2>Categories</h2>
+    <div class="controls">
+        <button onclick="fetchCategories()">Load Categories</button>
+        <button onclick="showAddCategoryForm()">Add Category</button>
     </div>
 
-
-    <!-- Categories Section -->
-    <div class="section" id="categoriesSection" class="hidden">
-        <h2>Categories</h2>
-        <div class="controls">
-            <button onclick="fetchCategories()">Load Categories</button>
-            <button onclick="showAddCategoryForm()">Add Category</button>
+    <div id="addCategoryForm" class="hidden auth-form" style="margin-bottom: 20px;">
+        <h3>Add New Category</h3>
+        <div class="form-group">
+            <label for="categoryName">Name:</label>
+            <input type="text" id="categoryName" placeholder="Category name">
         </div>
-
-        <div id="addCategoryForm" class="hidden auth-form" style="margin-bottom: 20px;">
-            <h3>Add New Category</h3>
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" id="categoryName" placeholder="Category name">
-            </div>
-            <div class="form-group">
-                <label>Description:</label>
-                <input type="text" id="categoryDescription" placeholder="Category description">
-            </div>
-            <button onclick="createCategory()" class="btn-success">Add Category</button>
-            <button onclick="hideAddCategoryForm()" class="btn-danger">Cancel</button>
+        <div class="form-group">
+            <label for="categoryDescription">Description:</label>
+            <input type="text" id="categoryDescription" placeholder="Category description">
         </div>
-
-        <div id="updateCategoryForm" class="hidden auth-form" style="margin-bottom: 20px;">
-            <h3>Update Category</h3>
-            <input type="hidden" id="updateCategoryId">
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" id="updateCategoryName" placeholder="Category name">
-            </div>
-            <div class="form-group">
-                <label>Description:</label>
-                <input type="text" id="updateCategoryDescription" placeholder="Category description">
-            </div>
-            <button onclick="updateCategory()" class="btn-success">Update Category</button>
-            <button onclick="hideUpdateCategoryForm()" class="btn-danger">Cancel</button>
-        </div>
-
-        <table id="categoriesTable" class="hidden">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <button onclick="createCategory()" class="btn-success">Add Category</button>
+        <button onclick="hideAddCategoryForm()" class="btn-danger">Cancel</button>
     </div>
 
-    <!-- Products Section -->
-    <div class="section" id="productsSection" class="hidden">
-        <h2>Products</h2>
-        <div class="controls">
-            <button onclick="fetchProducts()">Load Products</button>
-            <button onclick="showAddProductForm()">Add Product</button>
+    <div id="updateCategoryForm" class="hidden auth-form" style="margin-bottom: 20px;">
+        <h3>Update Category</h3>
+        <input type="hidden" id="updateCategoryId">
+        <div class="form-group">
+            <label for="updateCategoryName">>Name:</label>
+            <input type="text" id="updateCategoryName" placeholder="Category name">
         </div>
-
-        <div id="addProductForm" class="hidden auth-form" style="margin-bottom: 20px;">
-            <h3>Add New Product</h3>
-            <div class="form-group">
-                <label for="productName">Name:</label>
-                <input type="text" id="productName" placeholder="Product name">
-            </div>
-            <div class="form-group">
-                <label for="productPrice">Price:</label>
-                <input type="number" id="productPrice" placeholder="0.00" step="0.01">
-            </div>
-            <div class="form-group">
-                <label for="productDescription">Description:</label>
-                <input type="text" id="productDescription" placeholder="Product description">
-            </div>
-            <div class="form-group">
-                <label for="productCategory">Category:</label>
-                <select id="productCategory">
-                    <option value="">Select a category</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="productStock">Stock Quantity:</label>
-                <input type="number" id="productStock" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="productWeight">Weight:</label>
-                <input type="text" id="productWeight" placeholder="e.g., 1kg, 500g">
-            </div>
-            <div class="form-group">
-                <label for="productDimensions">Dimensions:</label>
-                <input type="text" id="productDimensions" placeholder="e.g., 10x5x3 cm">
-            </div>
-            <button onclick="createProduct()" class="btn-success">Add Product</button>
-            <button onclick="hideAddProductForm()" class="btn-danger">Cancel</button>
+        <div class="form-group">
+            <label for="updateCategoryDescription">>Description:</label>
+            <input type="text" id="updateCategoryDescription" placeholder="Category description">
         </div>
-
-        <div id="updateProductForm" class="hidden auth-form" style="margin-bottom: 20px;">
-            <h3>Update Product</h3>
-            <input type="hidden" id="updateProductId">
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" id="updateProductName" placeholder="Product name">
-            </div>
-            <div class="form-group">
-                <label>Price:</label>
-                <input type="number" id="updateProductPrice" placeholder="0.00" step="0.01">
-            </div>
-            <div class="form-group">
-                <label>Description:</label>
-                <input type="text" id="updateProductDescription" placeholder="Product description">
-            </div>
-            <div class="form-group">
-                <label>Category:</label>
-                <select id="updateProductCategory">
-                    <option value="">Select a category</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Stock Quantity:</label>
-                <input type="number" id="updateProductStock" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label>Weight:</label>
-                <input type="text" id="updateProductWeight" placeholder="e.g., 1kg, 500g">
-            </div>
-            <div class="form-group">
-                <label>Dimensions:</label>
-                <input type="text" id="updateProductDimensions" placeholder="e.g., 10x5x3 cm">
-            </div>
-            <button onclick="updateProduct()" class="btn-success">Update Product</button>
-            <button onclick="hideUpdateProductForm()" class="btn-danger">Cancel</button>
-        </div>
-
-        <table id="productsTable" class="hidden">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Stock Quantity</th>
-                    <th>Weight</th>
-                    <th>Dimensions</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <button onclick="updateCategory()" class="btn-success">Update Category</button>
+        <button onclick="hideUpdateCategoryForm()" class="btn-danger">Cancel</button>
     </div>
 
-    <!-- Cart Section -->
-    <div class="section" id="cartSection" class="hidden">
-        <h2>Cart</h2>
-        <div class="controls">
-            <button onclick="fetchCart()">Load Cart</button>
-            <button onclick="clearCart()" class="btn-danger">Clear Cart</button>
-            <button onclick="checkout()" class="btn-success">Checkout</button>
-        </div>
-        <div id="cartItems"></div>
-        <div class="discount-section" style="margin: 15px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9;">
-            <h3>Apply Discount Code</h3>
-            <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="discountCode" placeholder="Enter discount code" style="flex: 1;">
-                <button onclick="applyDiscount()" class="btn-success">Apply Discount</button>
-            </div>
-        </div>
+    <table id="categoriesTable" class="hidden">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Products Section -->
+<div class="section hidden" id="productsSection">
+    <h2>Products</h2>
+    <div class="controls">
+        <button onclick="fetchProducts()">Load Products</button>
+        <button onclick="showAddProductForm()">Add Product</button>
     </div>
 
-    <!-- Orders Section -->
-    <div class="section" id="ordersSection" class="hidden">
-        <h2>Orders</h2>
-        <div class="controls">
-            <button onclick="fetchOrders();fetchOrderStatistics();">Load Orders</button>
+    <div id="addProductForm" class="hidden auth-form" style="margin-bottom: 20px;">
+        <h3>Add New Product</h3>
+        <div class="form-group">
+            <label for="productName">Name:</label>
+            <input type="text" id="productName" placeholder="Product name">
         </div>
-        <table id="ordersTable" class="hidden">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="form-group">
+            <label for="productPrice">Price:</label>
+            <input type="number" id="productPrice" placeholder="0.00" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="productDescription">Description:</label>
+            <input type="text" id="productDescription" placeholder="Product description">
+        </div>
+        <div class="form-group">
+            <label for="productCategory">Category:</label>
+            <select id="productCategory">
+                <option value="">Select a category</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productStock">Stock Quantity:</label>
+            <input type="number" id="productStock" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+            <label for="productWeight">Weight:</label>
+            <input type="text" id="productWeight" placeholder="e.g., 1kg, 500g">
+        </div>
+        <div class="form-group">
+            <label for="productDimensions">Dimensions:</label>
+            <input type="text" id="productDimensions" placeholder="e.g., 10x5x3 cm">
+        </div>
+        <button onclick="createProduct()" class="btn-success">Add Product</button>
+        <button onclick="hideAddProductForm()" class="btn-danger">Cancel</button>
     </div>
 
-    <!-- User Management Section (Moderators and Admins Only) -->
-    <div class="section" id="userManagementSection" class="hidden">
-        <h2>User Management</h2>
-        <div class="controls">
-            <button onclick="fetchUsers()">Load Users</button>
+    <div id="updateProductForm" class="hidden auth-form" style="margin-bottom: 20px;">
+        <h3>Update Product</h3>
+        <input type="hidden" id="updateProductId">
+        <div class="form-group">
+            <label for="updateProductName">Name:</label>
+            <input type="text" id="updateProductName" placeholder="Product name">
         </div>
-        <table id="usersTable" class="hidden">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Date Joined</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="form-group">
+            <label for="updateProductPrice">Price:</label>
+            <input type="number" id="updateProductPrice" placeholder="0.00" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="updateProductDescription">>Description:</label>
+            <input type="text" id="updateProductDescription" placeholder="Product description">
+        </div>
+        <div class="form-group">
+            <label for="updateProductCategory">>Category:</label>
+            <select id="updateProductCategory">
+                <option value="">Select a category</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="updateProductStock">>Stock Quantity:</label>
+            <input type="number" id="updateProductStock" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+            <label for="updateProductWeight">>Weight:</label>
+            <input type="text" id="updateProductWeight" placeholder="e.g., 1kg, 500g">
+        </div>
+        <div class="form-group">
+            <label for="updateProductDimensions">>Dimensions:</label>
+            <input type="text" id="updateProductDimensions" placeholder="e.g., 10x5x3 cm">
+        </div>
+        <button onclick="updateProduct()" class="btn-success">Update Product</button>
+        <button onclick="hideUpdateProductForm()" class="btn-danger">Cancel</button>
     </div>
 
-    <div class="section" id="allOrdersSection" class="hidden">
-        <h2>All Orders Management</h2>
-        <div class="controls">
-            <button onclick="fetchAllOrders();displayAllOrders();">Load All Orders</button>
-        </div>
-        <div id="ordersStats" class="hidden" style="margin: 15px 0; padding: 10px; background: #f5f5f5; border: 1px solid #ddd;">
-            <strong>Order Statistics:</strong>
-            <span id="totalOrders"></span> |
-            <span id="pendingOrders"></span> |
-            <span id="shippedOrders"></span> |
-            <span id="deliveredOrders"></span> |
-            <span id="cancelledOrders"></span> |
-            <strong>Total Revenue:</strong> €<span id="totalRevenue"></span>
-        </div>
-        <table id="allOrdersTable" class="hidden">
-            <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>User</th>
-                <th>Email</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <table id="productsTable" class="hidden">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Stock Quantity</th>
+            <th>Weight</th>
+            <th>Dimensions</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Cart Section -->
+<div class="section hidden" id="cartSection">
+    <h2>Cart</h2>
+    <div class="controls">
+        <button onclick="fetchCart()">Load Cart</button>
+        <button onclick="clearCart()" class="btn-danger">Clear Cart</button>
+        <button onclick="checkout()" class="btn-success">Checkout</button>
     </div>
-
-    <div class="section" id="discountsManagementSection" class="hidden">
-        <h2>Manage Discounts</h2>
-        <div class="auth-section">
-            <button onclick="loadDiscounts()">Load Discounts</button>
-            <button onclick="toggleDiscountForm();populateDiscountCategoryDropdown()">Add Discount</button>
+    <div id="cartItems"></div>
+    <div class="discount-section" style="margin: 15px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9;">
+        <h3>Apply Discount Code</h3>
+        <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
+            <label for="discountCode">Discount Code: </label><input type="text" id="discountCode" placeholder="Enter discount code" style="flex: 1;">
+            <button onclick="applyDiscount()" class="btn-success">Apply Discount</button>
         </div>
-        <div id="addDiscountForm" class="hidden">
-            <div class="form-group">
-                <label for="discount_code">Discount Code:</label>
-                <input type="text" id="discount_code" name="code" required>
-            </div>
-            <div class="form-group">
-                <label for="discount_percentage">Percentage (0-100):</label>
-                <input type="number" id="discount_percentage" name="percentage" min="0" max="100" required>
-            </div>
-            <div class="form-group">
-                <label for="discount_expiryDate">Expiry Date:</label>
-                <input type="date" id="discount_expiryDate" name="expiryDate" required>
-            </div>
-            <div class="form-group">
-                <label for="discount_category">Category:</label>
-                <select id="discount_category" name="category" required>
-
-                </select>
-            </div>
-            <button onclick="createDiscount()">Create Discount</button>
-        </div>
-        <ul id="discountList"></ul>
     </div>
+</div>
 
-    <script src="client.js"></script>
+<!-- Orders Section -->
+<div class="section hidden" id="ordersSection">
+    <h2>Orders</h2>
+    <div class="controls">
+        <button onclick="fetchOrders();fetchOrderStatistics();">Load Orders</button>
+    </div>
+    <table id="ordersTable" class="hidden">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- User Management Section (Moderators and Admins Only) -->
+<div class="section hidden" id="userManagementSection">
+    <h2>User Management</h2>
+    <div class="controls">
+        <button onclick="fetchUsers()">Load Users</button>
+    </div>
+    <table id="usersTable" class="hidden">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Date Joined</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div class="section hidden" id="allOrdersSection">
+    <h2>All Orders Management</h2>
+    <div class="controls">
+        <button onclick="fetchAllOrders();displayAllOrders();">Load All Orders</button>
+    </div>
+    <div id="ordersStats" class="hidden"
+         style="margin: 15px 0; padding: 10px; background: #f5f5f5; border: 1px solid #ddd;">
+        <strong>Order Statistics:</strong>
+        <span id="totalOrders"></span> |
+        <span id="pendingOrders"></span> |
+        <span id="shippedOrders"></span> |
+        <span id="deliveredOrders"></span> |
+        <span id="cancelledOrders"></span> |
+        <strong>Total Revenue:</strong> €<span id="totalRevenue"></span>
+    </div>
+    <table id="allOrdersTable" class="hidden">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div class="section hidden" id="discountsManagementSection">
+    <h2>Manage Discounts</h2>
+    <div class="auth-section">
+        <button onclick="loadDiscounts()">Load Discounts</button>
+        <button onclick="toggleDiscountForm();populateDiscountCategoryDropdown()">Add Discount</button>
+    </div>
+    <div id="addDiscountForm" class="hidden">
+        <div class="form-group">
+            <label for="discount_code">Discount Code:</label>
+            <input type="text" id="discount_code" name="code" required>
+        </div>
+        <div class="form-group">
+            <label for="discount_percentage">Percentage (0-100):</label>
+            <input type="number" id="discount_percentage" name="percentage" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+            <label for="discount_expiryDate">Expiry Date:</label>
+            <input type="date" id="discount_expiryDate" name="expiryDate" required>
+        </div>
+        <div class="form-group">
+            <label for="discount_category">Category:</label>
+            <select id="discount_category" name="category" required>
+
+            </select>
+        </div>
+        <button onclick="createDiscount()">Create Discount</button>
+    </div>
+    <ul id="discountList"></ul>
+</div>
+
+<script src="client.js"></script>
 </body>
 </html>

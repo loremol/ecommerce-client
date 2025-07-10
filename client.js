@@ -24,7 +24,7 @@ async function register() {
     const username = document.getElementById('regUsername').value;
     const email = document.getElementById('regEmail').value;
     const password = document.getElementById('regPassword').value;
-    const password_confirm = document.getElementById('confirmPassword').value;
+    const password_confirm = document.getElementById('regConfirmPassword').value;
 
     if (!username || !email || !password) {
         showStatus('Please fill in all fields', 'error');
@@ -128,7 +128,7 @@ async function updateProfile() {
     const phone = document.getElementById('updPhone').value;
     const address = document.getElementById('updAddress').value;
     let date_of_birth = '';
-    if(document.getElementById('updDateOfBirth').value === 'NaN-NaN-NaN')
+    if (document.getElementById('updDateOfBirth').value === 'NaN-NaN-NaN')
         date_of_birth = '';
     else
         date_of_birth = document.getElementById('updDateOfBirth').value;
@@ -258,7 +258,7 @@ async function toggleUserBan(username, currentlyBanned) {
 
         if (response.ok) {
             showStatus(`User ${username} ${action}ned successfully`);
-            fetchUsers(); // Refresh the user list
+            await fetchUsers(); // Refresh the user list
         } else {
             showStatus(data.error || `Failed to ${action} user`, 'error');
         }
@@ -369,7 +369,7 @@ async function createCategory() {
 
         if (response.ok) {
             hideAddCategoryForm();
-            fetchCategories(); // Refresh the categories list
+            await fetchCategories();
             showStatus('Category created successfully');
         } else {
             showStatus(data.message || 'Failed to create category', 'error');
@@ -480,7 +480,7 @@ async function updateCategory() {
 
         if (response.ok) {
             hideUpdateCategoryForm();
-            fetchCategories(); // Refresh the categories list
+            await fetchCategories();
             showStatus('Category updated successfully');
         } else {
             showStatus(data.message || 'Failed to update category', 'error');
@@ -576,7 +576,7 @@ async function createProduct() {
                 price: parseFloat(price),
                 description,
                 category: parseInt(category),
-                stock_quantity: parseInt(stock_quantity),
+                stock_quantity: stock_quantity,
                 weight,
                 dimensions
             })
@@ -586,7 +586,7 @@ async function createProduct() {
 
         if (response.ok) {
             hideAddProductForm();
-            fetchProducts();
+            await fetchProducts();
             showStatus('Product added successfully');
         } else {
             showStatus(data.message || 'Failed to add product', 'error');
@@ -676,7 +676,7 @@ async function updateProduct() {
                 price: parseFloat(price),
                 description,
                 category: parseInt(categoryId), // Send just the category ID
-                stock_quantity: parseInt(stock_quantity),
+                stock_quantity: stock_quantity,
                 weight,
                 dimensions
             })
@@ -686,7 +686,7 @@ async function updateProduct() {
 
         if (response.ok) {
             hideUpdateProductForm();
-            fetchProducts();
+            await fetchProducts();
             showStatus('Product updated successfully');
         } else {
             showStatus(data.message || 'Failed to update product', 'error');
@@ -706,7 +706,7 @@ async function deleteProduct(productId) {
         });
 
         if (response.ok) {
-            fetchProducts();
+            await fetchProducts();
             showStatus('Product deleted successfully');
         } else {
             const data = await response.json();
@@ -751,7 +751,7 @@ async function addToCart(product) {
 
         if (response.ok) {
             showStatus('Item added to cart');
-            fetchCart();
+            await fetchCart();
         } else if (response.status === 400) {
             showStatus('Not enough product in stock', 'error');
         } else {
@@ -772,7 +772,7 @@ async function removeFromCart(itemId) {
         });
 
         if (response.ok) {
-            fetchCart();
+            await fetchCart();
             showStatus('Item removed from cart');
         } else {
             const data = await response.json();
@@ -828,7 +828,7 @@ async function applyDiscount() {
         if (response.ok) {
             showStatus('Discount applied successfully!');
             document.getElementById('discountCode').value = ''; // Clear the input
-            fetchCart(); // Refresh cart to show updated prices
+            await fetchCart(); // Refresh cart to show updated prices
         } else {
             showStatus(data.error || 'Failed to apply discount', 'error');
         }
@@ -1010,7 +1010,6 @@ function toggleDiscountForm() {
 }
 
 
-
 // Order
 async function fetchOrders() {
     try {
@@ -1132,9 +1131,9 @@ async function checkout() {
 
             // Optionally refresh orders and products to show updated data
             if (document.getElementById('ordersSection').classList.contains('hidden') === false) {
-                fetchOrders();
+                await fetchOrders();
             }
-            fetchProducts(); // Refresh to show updated stock quantities
+            await fetchProducts(); // Refresh to show updated stock quantities
 
         } else {
             // Handle specific error cases
@@ -1182,12 +1181,12 @@ async function updateOrderStatus(orderId, newStatus) {
             if (document.getElementById('allOrdersSection').classList.contains('hidden') === false) {
                 await fetchAllOrders(); // Refresh all orders if in admin view
             } else {
-                fetchOrders(); // Refresh user's orders
+                await fetchOrders(); // Refresh user's orders
             }
 
             // If the order was cancelled, also refresh products to show updated stock
             if (newStatus === 'C') {
-                fetchProducts();
+                await fetchProducts();
             }
         } else {
             showStatus(data.error || 'Failed to update order', 'error');
