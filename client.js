@@ -1303,7 +1303,7 @@ async function deleteOrder(orderId) {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/cancel/${orderId}/`, {
+        const response = await fetch(`${API_ENDPOINT}/orders/delete/${orderId}/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
