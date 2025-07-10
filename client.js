@@ -1,4 +1,4 @@
-const API_ENDPOINT = 'http://127.0.0.1:8000';
+const URL = 'https://ecommerce-django-production-f55b.up.railway.app';
 
 let currentUser = null;
 let categories = [];
@@ -32,7 +32,7 @@ async function register() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/auth/register/`, {
+        const response = await fetch(`${URL}/auth/register/`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, email, password, password_confirm})
@@ -64,7 +64,7 @@ async function login() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/auth/login/`, {
+        const response = await fetch(`${URL}/auth/login/`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({email, password}),
@@ -87,7 +87,7 @@ async function login() {
 
 async function logout() {
     try {
-        await fetch(`${API_ENDPOINT}/auth/logout/`, {
+        await fetch(`${URL}/auth/logout/`, {
             method: 'POST',
             headers: {'Authorization': `Token ${localStorage.authToken}`},
         });
@@ -102,7 +102,7 @@ async function logout() {
 
 async function populateProfile() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/auth/profile/`, {
+        const response = await fetch(`${URL}/auth/profile/`, {
             method: 'GET',
             headers: {'Authorization': `Token ${localStorage.authToken}`},
         });
@@ -134,7 +134,7 @@ async function updateProfile() {
         date_of_birth = document.getElementById('updDateOfBirth').value;
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/auth/update/`, {
+        const response = await fetch(`${URL}/auth/update/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ function showLoggedOutState() {
 async function fetchUsers() {
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/auth/users/`, {
+        const response = await fetch(`${URL}/auth/users/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -242,8 +242,8 @@ async function toggleUserBan(username, currentlyBanned) {
 
     try {
         const endpoint = currentlyBanned ?
-            `${API_ENDPOINT}/auth/unban/` :
-            `${API_ENDPOINT}/auth/ban/`;
+            `${URL}/auth/unban/` :
+            `${URL}/auth/ban/`;
 
         const response = await fetch(endpoint, {
             method: 'PUT',
@@ -269,7 +269,7 @@ async function toggleUserBan(username, currentlyBanned) {
 
 async function viewUserProfile(userId) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/auth/users/${userId}/`, {
+        const response = await fetch(`${URL}/auth/users/${userId}/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -301,7 +301,7 @@ async function viewUserProfile(userId) {
 // Fetch categories from the API
 async function fetchCategories() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/`, {
+        const response = await fetch(`${URL}/store/categories/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -353,7 +353,7 @@ async function createCategory() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/create/`, {
+        const response = await fetch(`${URL}/store/categories/create/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -386,7 +386,7 @@ async function deleteCategory(categoryId) {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/delete/${categoryId}/`, {
+        const response = await fetch(`${URL}/store/categories/delete/${categoryId}/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
@@ -464,7 +464,7 @@ async function updateCategory() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/categories/update/${categoryId}/`, {
+        const response = await fetch(`${URL}/store/categories/update/${categoryId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -493,7 +493,7 @@ async function updateCategory() {
 // Product
 async function fetchProducts() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/products/`, {
+        const response = await fetch(`${URL}/store/products/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -565,7 +565,7 @@ async function createProduct() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/products/create/`, {
+        const response = await fetch(`${URL}/store/products/create/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -665,7 +665,7 @@ async function updateProduct() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/products/update/${productId}/`, {
+        const response = await fetch(`${URL}/store/products/update/${productId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -700,7 +700,7 @@ async function deleteProduct(productId) {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/store/products/delete/${productId}/`, {
+        const response = await fetch(`${URL}/store/products/delete/${productId}/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
@@ -720,7 +720,7 @@ async function deleteProduct(productId) {
 // Cart
 async function fetchCart() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/`, {
+        const response = await fetch(`${URL}/cart/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -740,7 +740,7 @@ async function fetchCart() {
 
 async function addToCart(product) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/add/`, {
+        const response = await fetch(`${URL}/cart/add/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -766,7 +766,7 @@ async function addToCart(product) {
 
 async function removeFromCart(itemId) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/${itemId}`, {
+        const response = await fetch(`${URL}/cart/${itemId}`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
@@ -787,7 +787,7 @@ async function clearCart() {
     if (!confirm('Are you sure you want to clear your cart?')) return;
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/clear/`, {
+        const response = await fetch(`${URL}/cart/clear/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
@@ -814,7 +814,7 @@ async function applyDiscount() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/apply_discount/`, {
+        const response = await fetch(`${URL}/cart/apply_discount/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -933,7 +933,7 @@ async function createDiscount() {
     const category = document.getElementById('discount_category').value;
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/create_discount/`, {
+        const response = await fetch(`${URL}/cart/create_discount/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -958,7 +958,7 @@ async function createDiscount() {
 // Add this function to delete a discount
 async function deleteDiscount(discountId) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/delete_discount/${discountId}/`, {
+        const response = await fetch(`${URL}/cart/delete_discount/${discountId}/`, {
             headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`},
             method: 'DELETE'
         });
@@ -978,7 +978,7 @@ async function deleteDiscount(discountId) {
 // Add this function to load and display all discounts
 async function loadDiscounts() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/cart/discounts/`, {
+        const response = await fetch(`${URL}/cart/discounts/`, {
             headers: {'Content-Type': 'application/json', 'Authorization': `Token ${localStorage.authToken}`}
         });
         const data = await response.json();
@@ -1013,7 +1013,7 @@ function toggleDiscountForm() {
 // Order
 async function fetchOrders() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/`, {
+        const response = await fetch(`${URL}/orders/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -1082,7 +1082,7 @@ function displayOrders() {
 
 async function viewOrderDetails(orderId) {
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/${orderId}/`, {
+        const response = await fetch(`${URL}/orders/${orderId}/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -1111,7 +1111,7 @@ async function checkout() {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/checkout/`, {
+        const response = await fetch(`${URL}/orders/checkout/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1161,7 +1161,7 @@ async function updateOrderStatus(orderId, newStatus) {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/update/${orderId}/`, {
+        const response = await fetch(`${URL}/orders/update/${orderId}/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -1199,7 +1199,7 @@ async function updateOrderStatus(orderId, newStatus) {
 // admin
 async function fetchAllOrders() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/all/`, {
+        const response = await fetch(`${URL}/orders/all/`, {
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
 
@@ -1275,7 +1275,7 @@ function displayAllOrders() {
 
 async function fetchOrderStatistics() {
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/stats/`, {
+        const response = await fetch(`${URL}/orders/stats/`, {
             method: 'GET',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
@@ -1303,7 +1303,7 @@ async function deleteOrder(orderId) {
     }
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/orders/delete/${orderId}/`, {
+        const response = await fetch(`${URL}/orders/delete/${orderId}/`, {
             method: 'DELETE',
             headers: {'Authorization': `Token ${localStorage.authToken}`}
         });
